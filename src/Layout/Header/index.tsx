@@ -1,16 +1,36 @@
-import type React from "react";
-import { LineOutlined, BorderOutlined, CloseOutlined } from "@ant-design/icons";
+import { Flex, Layout } from "antd";
+import React from "react";
 import styles from './index.module.less'
-import { useWindowControls } from "../../hooks/useWindowControls";
+import { MoonOutlined, SunOutlined } from "@ant-design/icons";
+import useStore from "../../store/store";
+import { THEMESTYLE } from "../../types/constants";
 
-const Navigation: React.FC = () => {
-    const { minimize, maximize, close } = useWindowControls()
-    
-    return <div className={styles.main}>
-        <div className={styles.operate} onClick={minimize}><LineOutlined /></div>
-        <div className={styles.operate} onClick={maximize}><BorderOutlined /></div>
-        <div className={styles.operate} onClick={close}><CloseOutlined /></div>
-    </div>
+const Header: React.FC = () => {
+    const { theme, setTheme } = useStore()
+    const { Header } = Layout;
+
+    const toggleTheme = () => {
+        const htmlElement = document.documentElement;
+        if (theme === THEMESTYLE.LIGHT) {
+            setTheme(THEMESTYLE.DARK);
+            htmlElement.setAttribute('data-theme', 'dark');
+
+        } else {
+            setTheme(THEMESTYLE.LIGHT);
+            htmlElement.removeAttribute('data-theme');
+        }
+    }
+
+    return <Header className={styles.headerWrapper}>
+        <div></div>
+        <Flex justify="end" align="center" gap="small" className={styles['tools-btn']}>
+            <div className={styles.icon} onClick={toggleTheme}>
+                {
+                    theme === THEMESTYLE.LIGHT ? <SunOutlined title="切换主题色" /> : <MoonOutlined title="切换主题色" style={{ color: '#fff' }} />
+                }
+            </div>
+        </Flex>
+    </Header>
 }
 
-export default Navigation
+export default Header;
