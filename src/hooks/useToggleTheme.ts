@@ -6,6 +6,10 @@ interface IUseToggleThemeReturn {
     toggleTheme: () => void;
 }
 
+/**
+ * 切换主题
+ * @returns 
+ */
 export const useToggleTheme = (): IUseToggleThemeReturn => {
     const { theme, setTheme } = useStore();
 

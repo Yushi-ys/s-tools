@@ -2,7 +2,15 @@
 import { useEffect, useCallback } from 'react';
 import { useElectron } from '@/hooks/useElectron';
 
-export const useDevTools = () => {
+interface IUseDevToolsReturn {
+  toggleDevTools: () => void;
+}
+
+/**
+ * 快捷键打开/关闭开发者工具
+ * @returns 
+ */
+export const useDevTools = (): IUseDevToolsReturn => {
   const { send, isElectron } = useElectron();
 
   // 切换控制台
@@ -18,6 +26,11 @@ export const useDevTools = () => {
     if (event.key === 'F12') {
       event.preventDefault();
       toggleDevTools();
+    }
+
+    if (event.key === 'F11' || event.code === '122') {
+      // 阻止默认的全屏行为，顺带就写在这个hook里了
+      event.preventDefault();
     }
   }, [toggleDevTools]);
 

@@ -7,6 +7,10 @@ interface IUseElectronReturn {
   on: (channel: string, callback: (data: any) => void) => (() => void) | undefined;
 }
 
+/**
+ * 封装 Electron API 的 Hook
+ * @returns 
+ */
 export const useElectron = (): IUseElectronReturn => {
   const [isElectron, setIsElectron] = useState<boolean>(false);
 
