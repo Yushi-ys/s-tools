@@ -1,5 +1,5 @@
-import Navigation from "@/Layout/Navigation"
-import Layout from "@/Layout"
+import Navigation from "@/layout/Navigation"
+import Layout from "@/layout"
 import './App.css'
 import { useDevTools } from "@/hooks/useDevTools"
 

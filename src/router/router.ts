@@ -1,6 +1,6 @@
 // src/router/router.ts
 import { createBrowserRouter } from 'react-router-dom';
-import Clipboard from '@/View/Clipboard';
+import Clipboard from '@/views/Clipboard';
 import App from '@/App';
 
 // 页面组件懒加载

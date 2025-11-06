@@ -41,6 +41,17 @@ body {
 }
 
 .ant-layout-sider-children {
+  color: var(--text-primary);
   background-color: var(--bg-primary);
   border-right: 1px solid var(--border-color);
+}
+
+.ant-menu {
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+}
+
+.ant-menu-item {
+  color: var(--text-primary) !important;
 }
