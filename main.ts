@@ -37,6 +37,16 @@ const createWindow = () => {
     ipcMain.on('window-close', () => {
         mainWindow.close()
     })
+
+    ipcMain.on('toggle-devtools', () => {
+        if (mainWindow) {
+            if (mainWindow.webContents.isDevToolsOpened()) {
+                mainWindow.webContents.closeDevTools();
+            } else {
+                mainWindow.webContents.openDevTools();
+            }
+        }
+    });
 }
 
 app.whenReady().then(() => {

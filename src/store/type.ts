@@ -1,4 +1,4 @@
-import type { THEMESTYLE } from "../types/constants";
+import type { THEMESTYLE } from "@/types/constants";
 
 export interface StoreState {
     theme: keyof typeof THEMESTYLE;

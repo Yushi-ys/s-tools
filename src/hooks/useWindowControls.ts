@@ -1,4 +1,4 @@
-import { useElectron } from './useElectron';
+import { useElectron } from '@/hooks/useElectron';
 
 // 定义返回值类型
 interface IWindowControlsReturn {

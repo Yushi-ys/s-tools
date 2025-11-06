@@ -1,8 +1,8 @@
 import { Flex, Layout } from "antd";
 import React from "react";
 import { MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { THEMESTYLE } from "../../types/constants";
-import { useToggleTheme } from "../../hooks/useToggleTheme";
+import { THEMESTYLE } from "@/types/constants";
+import { useToggleTheme } from "@/hooks/useToggleTheme";
 
 import styles from './index.module.less'
 
