@@ -7,6 +7,10 @@ interface IWindowControlsReturn {
   close: () => void;
 }
 
+/**
+ * 封装窗口控制的 Hook
+ * @returns 
+ */
 export const useWindowControls = (): IWindowControlsReturn => {
   const { send } = useElectron();
 

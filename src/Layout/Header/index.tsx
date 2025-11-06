@@ -13,11 +13,9 @@ const Header: React.FC = () => {
     return <Header className={styles.headerWrapper}>
         <div></div>
         <Flex justify="end" align="center" gap="small" className={styles['tools-btn']}>
-            <div className={styles.icon} onClick={toggleTheme}>
-                {
-                    theme === THEMESTYLE.LIGHT ? <SunOutlined title="切换主题色" /> : <MoonOutlined title="切换主题色" style={{ color: '#fff' }} />
-                }
-            </div>
+            {
+                theme === THEMESTYLE.LIGHT ? <SunOutlined title="切换主题色" className={styles.icon} onClick={toggleTheme} /> : <MoonOutlined title="切换主题色" className={styles.icon} onClick={toggleTheme} style={{ color: '#fff' }} />
+            }
         </Flex>
     </Header>
 }

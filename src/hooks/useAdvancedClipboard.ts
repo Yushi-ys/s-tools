@@ -13,6 +13,10 @@ interface IUseAdvancedClipboardReturn {
     readClipboard: () => Promise<IClipboardItem[] | null>;
 }
 
+/**
+ * 记录和读取剪贴板内容
+ * @returns 
+ */
 export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
     const [clipboardItems, setClipboardItems] = useState<IClipboardItem[]>([]);
     const [error, setError] = useState<string | null>(null);
