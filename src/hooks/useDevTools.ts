@@ -23,6 +23,7 @@ export const useDevTools = (): IUseDevToolsReturn => {
   const handleKeyDown = useCallback((event: KeyboardEvent): void => {
     console.log(event);
 
+
     if (event.key === 'F12') {
       event.preventDefault();
       toggleDevTools();
@@ -32,6 +33,13 @@ export const useDevTools = (): IUseDevToolsReturn => {
       // 阻止默认的全屏行为，顺带就写在这个hook里了
       event.preventDefault();
     }
+
+    if (event.key === 'Control' || event.code === 'KeyR') {
+      // 阻止默认的全屏行为，顺带就写在这个hook里了
+      event.preventDefault();
+    }
+
+
   }, [toggleDevTools]);
 
   // 监听快捷键

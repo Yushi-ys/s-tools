@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "ahooks": "^3.9.6",
     "antd": "^5.27.3",
+    "classnames": "^2.5.1",
     "concurrently": "^9.1.2",
     "electron": "^38.0.0",
     "react": "^19.1.1",
