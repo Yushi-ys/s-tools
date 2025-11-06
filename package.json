@@ -1,7 +1,11 @@
 {
   "name": "s-tools",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "author": {
+    "name": "超爱徐老师的涛涛"
+  },
+  "license": "MIT",
   "type": "module",
   "main": "main.ts",
   "scripts": {
