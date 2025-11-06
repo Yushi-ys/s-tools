@@ -14,7 +14,7 @@ const createWindow = () => {
         },
         frame: false
     })
-    mainWindow.webContents.toggleDevTools()
+    // mainWindow.webContents.toggleDevTools()
     // const loadPath = path.resolve(process.cwd(), 'index.html')
     const loadPath = 'http://localhost:5173/'
     console.log('loadpath', loadPath);
