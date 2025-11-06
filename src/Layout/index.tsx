@@ -1,5 +1,6 @@
-import { Layout } from "antd";
 import React from "react";
+import { Layout } from "antd";
+import { Outlet } from "react-router-dom";
 import Header from "@/Layout/Header";
 import Menus from "@/Layout/Menus";
 
@@ -25,7 +26,7 @@ const Index: React.FC = () => {
                         minHeight: 360,
                     }}
                 >
-                    content
+                    <Outlet />
                 </div>
             </Content>
         </Layout>
