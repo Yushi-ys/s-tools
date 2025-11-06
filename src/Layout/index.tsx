@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import React from "react";
-import Header from "./Header";
-import Menus from "./Menu";
+import Header from "@/Layout/Header";
+import Menus from "@/Layout/Menus";
 
 import styles from './index.module.less'
 

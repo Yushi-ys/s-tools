@@ -1,6 +1,6 @@
 import type React from "react";
 import { LineOutlined, BorderOutlined, CloseOutlined } from "@ant-design/icons";
-import { useWindowControls } from "../../hooks/useWindowControls";
+import { useWindowControls } from "@/hooks/useWindowControls";
 
 import styles from './index.module.less'
 

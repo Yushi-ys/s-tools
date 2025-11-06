@@ -1,5 +1,5 @@
-import useStore from "../store/store";
-import { THEMESTYLE } from "../types/constants";
+import useStore from "@/store/store";
+import { THEMESTYLE } from "@/types/constants";
 
 interface IUseToggleThemeReturn {
     theme: keyof typeof THEMESTYLE;
