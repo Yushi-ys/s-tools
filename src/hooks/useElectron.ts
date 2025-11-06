@@ -33,7 +33,7 @@ export const useElectron = (): IUseElectronReturn => {
 
   const on = useCallback((channel: string, callback: (data: any) => void): (() => void) | undefined => {
     if (window.electronAPI) {
-      const handler = (event: any, data: any) => callback(data);
+      const handler = (_: any, data: any) => callback(data);
       window.electronAPI.on(channel, handler);
 
       // 返回清理函数
