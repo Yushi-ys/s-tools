@@ -1,25 +1,24 @@
 import { useState } from "react";
 
-interface ClipboardItem {
+interface IClipboardItem {
     type: string;
     data: string;
     blob: Blob;
 }
 
-interface UseAdvancedClipboardReturn {
-    clipboardItems: ClipboardItem[];
+interface IUseAdvancedClipboardReturn {
+    clipboardItems: IClipboardItem[];
     error: string | null;
     isLoading: boolean;
-    readClipboard: () => Promise<ClipboardItem[] | null>;
-    readText: () => Promise<string | null>;
+    readClipboard: () => Promise<IClipboardItem[] | null>;
 }
 
-export const useAdvancedClipboard = (): UseAdvancedClipboardReturn => {
-    const [clipboardItems, setClipboardItems] = useState<ClipboardItem[]>([]);
+export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
+    const [clipboardItems, setClipboardItems] = useState<IClipboardItem[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const readClipboard = async (): Promise<ClipboardItem[] | null> => {
+    const readClipboard = async (): Promise<IClipboardItem[] | null> => {
         setIsLoading(true);
         setError(null);
         try {
@@ -27,7 +26,7 @@ export const useAdvancedClipboard = (): UseAdvancedClipboardReturn => {
                 throw new Error("Clipboard API not supported");
             }
 
-            const items: ClipboardItem[] = [];
+            const items: IClipboardItem[] = [];
             const clipboardItems = await navigator.clipboard.read();
 
             for (const item of clipboardItems) {
@@ -55,24 +54,10 @@ export const useAdvancedClipboard = (): UseAdvancedClipboardReturn => {
         }
     };
 
-    const readText = async (): Promise<string | null> => {
-        try {
-            if (!navigator.clipboard) {
-                throw new Error("Clipboard API not supported");
-            }
-            return await navigator.clipboard.readText();
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : "Failed to read text from clipboard";
-            console.error(errorMsg);
-            return null;
-        }
-    };
-
     return {
         clipboardItems,
         error,
         isLoading,
         readClipboard,
-        readText,
     };
 }

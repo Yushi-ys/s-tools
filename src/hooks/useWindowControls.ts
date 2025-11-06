@@ -1,11 +1,18 @@
 import { useElectron } from './useElectron';
 
-export const useWindowControls = () => {
+// 定义返回值类型
+interface IWindowControlsReturn {
+  minimize: () => void;
+  maximize: () => void;
+  close: () => void;
+}
+
+export const useWindowControls = (): IWindowControlsReturn => {
   const { send } = useElectron();
 
-  const minimize = () => send('window-minimize');
-  const maximize = () => send('window-maximize');
-  const close = () => send('window-close');
+  const minimize = (): void => send('window-minimize');
+  const maximize = (): void => send('window-maximize');
+  const close = (): void => send('window-close');
 
   return { minimize, maximize, close };
 };

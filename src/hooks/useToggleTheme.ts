@@ -1,12 +1,12 @@
 import useStore from "../store/store";
 import { THEMESTYLE } from "../types/constants";
 
-interface UseToggleThemeReturn {
+interface IUseToggleThemeReturn {
     theme: keyof typeof THEMESTYLE;
     toggleTheme: () => void;
 }
 
-export const useToggleTheme = (): UseToggleThemeReturn => {
+export const useToggleTheme = (): IUseToggleThemeReturn => {
     const { theme, setTheme } = useStore();
 
     const toggleTheme = (): void => {

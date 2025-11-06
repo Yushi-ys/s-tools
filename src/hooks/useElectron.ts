@@ -1,7 +1,14 @@
 import { useEffect, useCallback, useState } from 'react';
 
-export const useElectron = () => {
-  const [isElectron, setIsElectron] = useState(false);
+interface IUseElectronReturn {
+  isElectron: boolean;
+  send: (channel: string, data?: any) => void;
+  invoke: (channel: string, data?: any) => Promise<any>;
+  on: (channel: string, callback: (data: any) => void) => (() => void) | undefined;
+}
+
+export const useElectron = (): IUseElectronReturn => {
+  const [isElectron, setIsElectron] = useState<boolean>(false);
 
   useEffect(() => {
     setIsElectron(!!window.electronAPI);
@@ -13,23 +20,24 @@ export const useElectron = () => {
     }
   }, []);
 
-  const invoke = useCallback(async (channel: string, data?: any) => {
+  const invoke = useCallback(async (channel: string, data?: any): Promise<any> => {
     if (window.electronAPI) {
       return window.electronAPI.invoke(channel, data);
     }
     throw new Error('Electron API 不可用');
   }, []);
 
-  const on = useCallback((channel: string, callback: (data: any) => void) => {
+  const on = useCallback((channel: string, callback: (data: any) => void): (() => void) | undefined => {
     if (window.electronAPI) {
       const handler = (event: any, data: any) => callback(data);
       window.electronAPI.on(channel, handler);
-      
+
       // 返回清理函数
       return () => {
-        window.electronAPI.removeAllListeners(channel);
+        window.electronAPI?.removeAllListeners(channel);
       };
     }
+    return undefined;
   }, []);
 
   return {
