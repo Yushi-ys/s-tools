@@ -9,11 +9,11 @@
   "type": "module",
   "main": "main.ts",
   "scripts": {
-    "dev": "concurrently \"vite\" \"electron .\"",
+    "dev": "concurrently \"vite\" \"cross-env NODE_ENV=dev electron .\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "pack": "electron-builder --win"
+    "pack": "cross-env NODE_ENV=prod electron-builder --win"
   },
   "build": {
     "appId": "com.19990703.sTools",
@@ -46,9 +46,10 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^9.33.0",
+    "cross-env": "^10.1.0",
     "electron": "^38.0.0",
     "electron-builder": "^26.0.12",
+    "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",

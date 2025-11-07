@@ -1,20 +1,22 @@
-import useStore from "@/store/store";
 import { useMemoizedFn } from "ahooks";
 import { useState } from "react";
 
 export interface IClipboardItem {
     type: string;
+    text?: string;
+    image?: string; // base64 数据
     data: string;
-    blob: Blob;
-    timestamp?: number;
+    preview?: string;
+    width?: number;
+    height?: number;
+    blob: Blob | null;
+    timestamp: number;
 }
 
 interface IUseAdvancedClipboardReturn {
-    clipboardItems: IClipboardItem[];
     error: string | null;
     isLoading: boolean;
-    readClipboard: () => Promise<IClipboardItem[] | null>;
-    updateClipboardData: () => Promise<void>;
+    writeClipboard: (item: IClipboardItem) => Promise<boolean>;
 }
 
 /**
@@ -22,61 +24,58 @@ interface IUseAdvancedClipboardReturn {
  * @returns 
  */
 export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
-    const { setclipBoradData } = useStore();
-    const [clipboardItems, setClipboardItems] = useState<IClipboardItem[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const readClipboard = useMemoizedFn(async (): Promise<IClipboardItem[] | null> => {
-        setIsLoading(true);
+    /**
+     * 写入剪贴板内容
+     */
+    const writeClipboard = useMemoizedFn(async (item: IClipboardItem): Promise<boolean> => {
         setError(null);
-        try {
+        setIsLoading(true);
+
+        if (item.type === 'text') {
+            // 处理文本复制
+            if (!navigator.clipboard) {
+                throw new Error("Clipboard API not supported");
+            }
+            await navigator.clipboard.writeText(item.data);
+            setIsLoading(false);
+            return true;
+        } else if (item.type === 'image' && item.blob) {
+            // 处理图片复制
             if (!navigator.clipboard) {
                 throw new Error("Clipboard API not supported");
             }
 
-            const items: IClipboardItem[] = [];
-            const clipboardItems = await navigator.clipboard.read();
+            // 将 blob 转换为 ClipboardItem
+            const clipboardItem = new ClipboardItem({
+                [item.blob.type]: item.blob
+            });
 
-            for (const clipboardItem of clipboardItems) {
-                for (const type of clipboardItem.types) {
-                    const blob = await clipboardItem.getType(type);
-                    const text = await blob.text();
-
-                    items.push({
-                        type,
-                        data: text,
-                        blob,
-                        timestamp: Date.now()
-                    });
-                }
-            }
-
-            setClipboardItems(items);
-            return items;
-        } catch (err) {
-            const errorMsg = err instanceof Error ? err.message : "Failed to read clipboard";
-            setError(errorMsg);
-            return null;
-        } finally {
+            await navigator.clipboard.write([clipboardItem]);
             setIsLoading(false);
+            return true;
+        } else if (item.type === 'image' && item.data.startsWith('data:image')) {
+            // 处理 base64 图片
+            const response = await fetch(item.data);
+            const blob = await response.blob();
+
+            const clipboardItem = new ClipboardItem({
+                [blob.type]: blob
+            });
+
+            await navigator.clipboard.write([clipboardItem]);
+            setIsLoading(false);
+            return true;
+        } else {
+            throw new Error(`Unsupported data type: ${item.type}`);
         }
     });
 
-    const updateClipboardData = useMemoizedFn(async () => {
-        const items = await readClipboard();
-        if (items?.length === 0) return;
-        const currentData = useStore.getState().clipBoradData;
-
-        if (items![0].data === currentData[0]?.data) return;
-        setclipBoradData([...items!, ...currentData]);
-    });
-
     return {
-        clipboardItems,
         error,
+        writeClipboard,
         isLoading,
-        readClipboard,
-        updateClipboardData
     };
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "antd";
+import { FloatButton, Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import Header from "@/layout/Header";
 import Menus from "@/layout/Menus";
@@ -14,12 +14,11 @@ const Index: React.FC = () => {
             <div className="demo-logo-vertical" />
             <Menus />
         </Sider>
-        <Layout>
+        <Layout className={styles.innerLayoutWrapper}>
             <Header />
-            <Content>
-                <div>
-                    <Outlet />
-                </div>
+            <Content className={styles.content}>
+                <Outlet />
+                <FloatButton.BackTop />
             </Content>
         </Layout>
     </Layout>
