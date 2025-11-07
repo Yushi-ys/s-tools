@@ -6,9 +6,10 @@ import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
 const useStore = create<StoreState>((set) => ({
   // 主题色
   theme: THEMESTYLE.LIGHT,
-  setTheme: (theme: keyof typeof THEMESTYLE) => set(() => ({ theme }) ),
+  setTheme: (theme: keyof typeof THEMESTYLE) => set(() => ({ theme })),
   clipBoradData: [],
-  setclipBoradData: (data: IClipboardItem[]) => set(() => ({ clipBoradData: data })),
-}))
+  setclipBoradData: (data: IClipboardItem[]) =>
+    set(() => ({ clipBoradData: data })),
+}));
 
 export default useStore;
