@@ -1,6 +1,17 @@
+.tabs {
+    :global(.ant-tabs-tab) {
+        width: 6rem !important;
+        justify-content: center !important;
+    }
+}
+
+.dataSourceWrapper {
+    height: 100%;
+    overflow-y: scroll;
+}
+
 .renderItem {
     margin-bottom: 0.1rem;
-    cursor: pointer;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
@@ -8,6 +19,19 @@
     .timestamp {
         font-size: 0.7rem;
         color: var(--text-tips-primary);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 0.5rem;
+
+        .icon {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .icon:hover {
+            color: var(--text-link-hover);
+        }
     }
 }
 

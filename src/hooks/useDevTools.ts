@@ -16,12 +16,12 @@ export const useDevTools = (): IUseDevToolsReturn => {
   // 切换控制台
   const toggleDevTools = useCallback((): void => {
     if (isElectron) {
+      
       send('toggle-devtools');
     }
   }, [isElectron, send]);
 
   const handleKeyDown = useCallback((event: KeyboardEvent): void => {
-    console.log(event);
 
 
     if (event.key === 'F12') {
