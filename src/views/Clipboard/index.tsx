@@ -36,22 +36,28 @@ const RenderItem = ({
   const { type, data, width, height } = item;
 
   const renderContent = useMemo(() => {
-    if (type === "text") return <div>{data}</div>;
-    if (type === "image")
-      return (
-        <Flex
-          align="flex-end"
-          justify="space-between"
-          style={{ paddingRight: "0.5rem" }}
-        >
-          <Image width={100} height={100} src={data} />
-          <div>
-            {width} * {height}
-          </div>
-        </Flex>
-      );
-    return <></>;
-  }, [type, data]);
+    switch (type) {
+      case "text":
+        return <div>{data}</div>;
+
+      case "image":
+        return (
+          <Flex
+            align="flex-end"
+            justify="space-between"
+            style={{ paddingRight: "0.5rem" }}
+          >
+            <Image width={100} height={100} src={data} />
+            <div>
+              {width} × {height}
+            </div>
+          </Flex>
+        );
+
+      default:
+        return null;
+    }
+  }, [type, data, width, height]);
 
   return (
     <div
