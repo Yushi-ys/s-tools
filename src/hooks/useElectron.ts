@@ -1,15 +1,18 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from "react";
 
 interface IUseElectronReturn {
   isElectron: boolean;
   send: (channel: string, data?: any) => void;
   invoke: (channel: string, data?: any) => Promise<any>;
-  on: (channel: string, callback: (data: any) => void) => (() => void) | undefined;
+  on: (
+    channel: string,
+    callback: (data: any) => void
+  ) => (() => void) | undefined;
 }
 
 /**
  * 封装 Electron API 的 Hook
- * @returns 
+ * @returns
  */
 export const useElectron = (): IUseElectronReturn => {
   const [isElectron, setIsElectron] = useState<boolean>(false);
@@ -24,30 +27,39 @@ export const useElectron = (): IUseElectronReturn => {
     }
   }, []);
 
-  const invoke = useCallback(async (channel: string, data?: any): Promise<any> => {
-    if (window.electronAPI) {
-      return window.electronAPI.invoke(channel, data);
-    }
-    throw new Error('Electron API 不可用');
-  }, []);
+  const invoke = useCallback(
+    async (channel: string, data?: any): Promise<any> => {
+      if (window.electronAPI) {
+        return window.electronAPI.invoke(channel, data);
+      }
+      throw new Error("Electron API 不可用");
+    },
+    []
+  );
 
-  const on = useCallback((channel: string, callback: (data: any) => void): (() => void) | undefined => {
-    if (window.electronAPI) {
-      const handler = (_: any, data: any) => callback(data);
-      window.electronAPI.on(channel, handler);
+  const on = useCallback(
+    (
+      channel: string,
+      callback: (data: any) => void
+    ): (() => void) | undefined => {
+      if (window.electronAPI) {
+        const handler = (_: any, data: any) => callback(data);
+        window.electronAPI.on(channel, handler);
 
-      // 返回清理函数
-      return () => {
-        window.electronAPI?.removeAllListeners(channel);
-      };
-    }
-    return undefined;
-  }, []);
+        // 返回清理函数
+        return () => {
+          window.electronAPI?.removeAllListeners(channel);
+        };
+      }
+      return undefined;
+    },
+    []
+  );
 
   return {
     isElectron,
     send,
     invoke,
-    on
+    on,
   };
 };

@@ -1,20 +1,20 @@
 // src/router/router.ts
-import { createBrowserRouter } from 'react-router-dom';
-import Clipboard from '@/views/Clipboard';
-import App from '@/App';
+import { createBrowserRouter } from "react-router-dom";
+import Clipboard from "@/views/Clipboard";
+import App from "@/App";
 
 // 页面组件懒加载
 // const Home = lazy(() => import('@/pages/Home'));
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     Component: App,
     children: [
       {
-        path: 'clipboard',
+        path: "clipboard",
         Component: Clipboard,
-      }
+      },
     ],
   },
 ]);

@@ -1,19 +1,16 @@
-import { useEffect } from "react"
-import Navigation from "@/layout/Navigation"
-import Layout from "@/layout"
-import { useDevTools } from "@/hooks/useDevTools"
-import { useElectronClipboard } from "@/hooks/useElectronClipboard"
+import { useEffect } from "react";
+import Navigation from "@/layout/Navigation";
+import Layout from "@/layout";
+import { useDevTools } from "@/hooks/useDevTools";
+import { useElectronClipboard } from "@/hooks/useElectronClipboard";
 
-import './App.css'
+import "./App.css";
 
 function App() {
-  const {
-    isElectron,
-    startMonitoring,
-    stopMonitoring
-  } = useElectronClipboard()
+  const { isElectron, startMonitoring, stopMonitoring } =
+    useElectronClipboard();
 
-  useDevTools()
+  useDevTools();
 
   useEffect(() => {
     if (isElectron) {
@@ -22,16 +19,16 @@ function App() {
 
       return () => {
         stopMonitoring();
-      }
+      };
     }
-  }, [isElectron, startMonitoring, stopMonitoring])
+  }, [isElectron, startMonitoring, stopMonitoring]);
 
   return (
-    <div style={{ overflow: 'hidden' }}>
+    <div style={{ overflow: "hidden" }}>
       <Navigation />
       <Layout />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
