@@ -15,7 +15,7 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { Flex, Image, message, Tabs, type TabsProps } from "antd";
-import { useMemoizedFn } from "ahooks";
+import { useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 
 interface IRenderItemProps {
@@ -98,6 +98,7 @@ const items: TabsProps["items"] = [
 const Clipboard: React.FC = () => {
   const { clipBoradData } = useStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const update = useUpdate();
   const { isLoading, writeClipboard } = useAdvancedClipboard();
   // 剪切板数据列表，点击选中的第几个
   const [selectIndex, setSelectIndex] = useState<number>(0);
@@ -137,6 +138,10 @@ const Clipboard: React.FC = () => {
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);
 
+  setInterval(() => {
+    update(); // 强制重新渲染
+  }, 60 * 1000);
+
   return (
     <>
       <div className={styles.tabs}>
@@ -152,15 +157,15 @@ const Clipboard: React.FC = () => {
         {isLoading
           ? "加载中.........."
           : dataSource.map((item, index) => (
-              <RenderItem
-                item={item}
-                index={index}
-                selectIndex={selectIndex}
-                updateSelectedIndex={updateSelectedIndex}
-                handleCopy={handleCopy}
-                key={"clipBorad" + index}
-              />
-            ))}
+            <RenderItem
+              item={item}
+              index={index}
+              selectIndex={selectIndex}
+              updateSelectedIndex={updateSelectedIndex}
+              handleCopy={handleCopy}
+              key={"clipBorad" + index}
+            />
+          ))}
       </div>
     </>
   );
