@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
 } from "@/hooks/useAdvancedClipboard";
 import useStore from "@/store/store";
 import cls from "classnames";
-
-import styles from "./index.module.less";
 import { formatRelativeTime } from "@/utils";
 import {
   CopyOutlined,
@@ -17,6 +15,9 @@ import {
 import { Flex, Image, message, Tabs, type TabsProps } from "antd";
 import { useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
+import Loading from "@/components/Loading";
+
+import styles from "./index.module.less";
 
 interface IRenderItemProps {
   item: IClipboardItem;
@@ -155,7 +156,7 @@ const Clipboard: React.FC = () => {
       <div className={styles.dataSourceWrapper}>
         {contextHolder}
         {isLoading
-          ? "加载中.........."
+          ? <Loading />
           : dataSource.map((item, index) => (
             <RenderItem
               item={item}
