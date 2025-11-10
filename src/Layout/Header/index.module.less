@@ -1,14 +1,37 @@
 .headerWrapper {
-    padding: 0;
-    height: 2rem;
-    background-color: var(--bg-primary);
-    .tools-btn {
-        height: 100%;
-        margin-right: 0.5rem;
+  padding: 0;
+  height: 2rem;
+  background-color: var(--bg-primary);
+  .tools-btn {
+    height: 100%;
+    margin-right: 0.5rem;
 
-        .icon {
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
+    .icon {
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin: 0 0.4rem;
+      position: relative;
+      display: inline-block;
     }
+
+    .wifi::after {
+      content: "🟢";
+      position: absolute;
+      bottom: -0.15rem;
+      right: -0.5rem;
+      font-size: 0.8rem;
+      line-height: 1;
+      transform: scale(0.6);
+    }
+
+    .no-wifi::after {
+      content: "🔴";
+      position: absolute;
+      bottom: -0.15rem;
+      right: -0.5rem;
+      font-size: 0.8rem;
+      line-height: 1;
+      transform: scale(0.6);
+    }
+  }
 }

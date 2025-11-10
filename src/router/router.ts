@@ -1,10 +1,11 @@
-// src/router/router.ts
+
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Clipboard from "@/views/Clipboard";
 import App from "@/App";
 
 // 页面组件懒加载
-// const Home = lazy(() => import('@/pages/Home'));
+const Clipboard = lazy(() => import('@/views/Clipboard'));
+const Uuid = lazy(() => import('@/views/Uuid'));
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ export const router = createBrowserRouter([
       {
         path: "clipboard",
         Component: Clipboard,
+      },
+      {
+        path: "uuid",
+        Component: Uuid,
       },
     ],
   },

@@ -16,7 +16,9 @@ const Index: React.FC = () => {
         <Menus />
       </Sider>
       <Layout className={styles.innerLayoutWrapper}>
-        <Header />
+        <div className={styles.header}>
+          <Header />
+        </div>
         <Content className={styles.content}>
           <Outlet />
           <FloatButton.BackTop />

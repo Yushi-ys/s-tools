@@ -1,13 +1,16 @@
 import React from "react";
-import { MoonOutlined, SunOutlined } from "@ant-design/icons";
+import { MoonOutlined, SunOutlined, WifiOutlined } from "@ant-design/icons";
 import { Flex, Layout } from "antd";
 import { THEMESTYLE } from "@/types/constants";
 import { useToggleTheme } from "@/hooks/useToggleTheme";
+import { useNetwork } from "ahooks";
+import cls from "classnames";
 
 import styles from "./index.module.less";
 
 const Header: React.FC = () => {
   const { theme, toggleTheme } = useToggleTheme();
+  const { online } = useNetwork();
   const { Header } = Layout;
 
   return (
@@ -19,6 +22,15 @@ const Header: React.FC = () => {
         gap="small"
         className={styles["tools-btn"]}
       >
+        {
+          <WifiOutlined
+            className={cls(
+              styles.icon,
+              online ? styles.wifi : styles["no-wifi"]
+            )}
+            title={online ? "网络在线" : "离线了...."}
+          />
+        }
         {theme === THEMESTYLE.LIGHT ? (
           <SunOutlined
             title="切换主题色"

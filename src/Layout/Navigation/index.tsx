@@ -4,6 +4,10 @@ import { useWindowControls } from "@/hooks/useWindowControls";
 
 import styles from "./index.module.less";
 
+/**
+ * 自定义 缩小 放大 退出 导航
+ * @returns 
+ */
 const Navigation: React.FC = () => {
   const { minimize, maximize, close } = useWindowControls();
 

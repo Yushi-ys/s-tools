@@ -1,15 +1,20 @@
 .layoutWrapper {
-    height: calc(100vh - 2rem);
+  height: calc(100vh - 2rem);
 
-    .sider {
-        text-align: center;
+  .sider {
+    text-align: center;
+  }
+
+  .innerLayoutWrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .header {
+      flex-shrink: 0;
     }
-
-    .innerLayoutWrapper {
-        height: 100%;
-
-        .content {
-            padding-bottom: 1.5rem;
-        }
+    .content {
+      flex: 1;
+      overflow-y: auto;
     }
+  }
 }
