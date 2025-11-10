@@ -38,7 +38,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
       if (item.type === "text") {
         // 处理文本复制
         if (!navigator.clipboard) {
-          throw new Error("Clipboard API not supported");
+          throw new Error("Clipboard API 不支持");
         }
         await navigator.clipboard.writeText(item.data);
         setIsLoading(false);
@@ -46,7 +46,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
       } else if (item.type === "image" && item.blob) {
         // 处理图片复制
         if (!navigator.clipboard) {
-          throw new Error("Clipboard API not supported");
+          throw new Error("Clipboard API 不支持");
         }
 
         // 将 blob 转换为 ClipboardItem
@@ -70,7 +70,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
         setIsLoading(false);
         return true;
       } else {
-        throw new Error(`Unsupported data type: ${item.type}`);
+        throw new Error(`不支持的数据类型: ${item.type}`);
       }
     }
   );

@@ -33,7 +33,6 @@ export const useDevTools = (): IUseDevToolsReturn => {
       }
 
       if (event.key === "Control" || event.code === "KeyR") {
-        // 阻止默认的全屏行为，顺带就写在这个hook里了
         event.preventDefault();
       }
     },
