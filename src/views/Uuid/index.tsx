@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Form, InputNumber, Radio, Row, Typography } from "antd";
+import { generateRandomString } from "@/utils";
+
 import styles from "./index.module.less";
 
 const Uuid: React.FC = () => {
@@ -11,36 +13,6 @@ const Uuid: React.FC = () => {
     character_length: 10,
     generation_rules: "only_num",
     sum: 1,
-  };
-
-  // 生成随机字符的函数
-  const generateRandomString = (length: number, rules: string): string => {
-    let characters = "";
-
-    switch (rules) {
-      case "only_num":
-        characters = "0123456789";
-        break;
-      case "only_letter":
-        characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        break;
-      case "num_letter":
-        characters =
-          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        break;
-      default:
-        characters =
-          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    }
-
-    let result = "";
-    const charactersLength = characters.length;
-
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-
-    return result;
   };
 
   const onFormLayoutChange = () => {
