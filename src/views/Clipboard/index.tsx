@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
@@ -28,64 +28,66 @@ interface IRenderItemProps {
   handleCopy: (e: React.MouseEvent, item: IClipboardItem) => void;
 }
 
-const RenderItem = ({
-  item,
-  index,
-  updateSelectedIndex,
-  handleCopy,
-  selectIndex,
-}: IRenderItemProps) => {
-  const { type, data, width, height } = item;
+const RenderItem = memo(
+  ({
+    item,
+    index,
+    updateSelectedIndex,
+    handleCopy,
+    selectIndex,
+  }: IRenderItemProps) => {
+    const { type, data, width, height } = item;
 
-  const renderContent = useMemo(() => {
-    switch (type) {
-      case "text":
-        return <div>{data}</div>;
+    const renderContent = useMemo(() => {
+      switch (type) {
+        case "text":
+          return <div>{data}</div>;
 
-      case "image":
-        return (
-          <Flex
-            align="flex-end"
-            justify="space-between"
-            style={{ paddingRight: "0.5rem" }}
-          >
-            <Image width={100} height={100} src={data} />
-            <div>
-              {width} × {height}
-            </div>
-          </Flex>
-        );
+        case "image":
+          return (
+            <Flex
+              align="flex-end"
+              justify="space-between"
+              style={{ paddingRight: "0.5rem" }}
+            >
+              <Image width={100} height={100} src={data} />
+              <div>
+                {width} × {height}
+              </div>
+            </Flex>
+          );
 
-      default:
-        return null;
-    }
-  }, [type, data, width, height]);
+        default:
+          return null;
+      }
+    }, [type, data, width, height]);
 
-  const handleClick = useMemoizedFn(() => {
-    updateSelectedIndex(index);
-  });
+    const handleClick = useMemoizedFn(() => {
+      updateSelectedIndex(index);
+    });
 
-  const handleCopyClick = useMemoizedFn((e: React.MouseEvent) => {
-    handleCopy(e, item);
-  });
+    const handleCopyClick = useMemoizedFn((e: React.MouseEvent) => {
+      handleCopy(e, item);
+    });
 
-  return (
-    <div
-      className={cls(styles.renderItem, {
-        [styles.selected]: selectIndex === index,
-      })}
-      onClick={handleClick}
-    >
-      <div>{renderContent}</div>
-      <div className={styles.timestamp}>
-        <div>{formatRelativeTime(item.timestamp!)}</div>
-        <div className={styles.icon} onClick={handleCopyClick}>
-          <CopyOutlined />
+    return (
+      <div
+        className={cls(styles.renderItem, {
+          [styles.selected]: selectIndex === index,
+        })}
+        onClick={handleClick}
+      >
+        <div>{renderContent}</div>
+        <div className={styles.timestamp}>
+          <div>{formatRelativeTime(item.timestamp!)}</div>
+          <div className={styles.icon} onClick={handleCopyClick}>
+            <CopyOutlined />
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 const items: TabsProps["items"] = [
   {

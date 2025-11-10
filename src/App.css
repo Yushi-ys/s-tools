@@ -93,6 +93,10 @@ body {
   color: var(--text-primary) !important;
 }
 
+.ant-btn-color-default {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
 /* App.css 或全局样式文件 */
 
 /* 现代简约滚动条 */
