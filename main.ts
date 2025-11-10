@@ -12,7 +12,6 @@ const startClipboardMonitoring = (mainWindow: BrowserWindow) => {
         return;
     }
 
-    // 初始化状态
     let lastClipboardText = clipboard.readText();
     let lastClipboardImage = clipboard.readImage();
     let lastImageHash = '';
@@ -29,13 +28,12 @@ const startClipboardMonitoring = (mainWindow: BrowserWindow) => {
                     text: currentText,
                     timestamp: Date.now()
                 });
-                return; // 避免同时处理文本和图片
+                return; 
             }
 
             // 检查图片变化
             const currentImage = clipboard.readImage();
             if (!currentImage.isEmpty()) {
-                // 生成图片哈希来比较是否变化
                 const imageSize = currentImage.getSize();
                 const currentImageHash = `${imageSize.width}x${imageSize.height}`;
 
