@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
@@ -13,9 +13,10 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { Flex, Image, message, Tabs, type TabsProps } from "antd";
-import { useMemoizedFn, useUpdate } from "ahooks";
+import { useInterval, useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";
+import EmptyPage from "@/components/Empty";
 
 import styles from "./index.module.less";
 
@@ -60,17 +61,25 @@ const RenderItem = ({
     }
   }, [type, data, width, height]);
 
+  const handleClick = useMemoizedFn(() => {
+    updateSelectedIndex(index);
+  });
+
+  const handleCopyClick = useMemoizedFn((e: React.MouseEvent) => {
+    handleCopy(e, item);
+  });
+
   return (
     <div
       className={cls(styles.renderItem, {
         [styles.selected]: selectIndex === index,
       })}
-      onClick={() => updateSelectedIndex(index)}
+      onClick={handleClick}
     >
       <div>{renderContent}</div>
       <div className={styles.timestamp}>
         <div>{formatRelativeTime(item.timestamp!)}</div>
-        <div className={styles.icon} onClick={(e) => handleCopy(e, item)}>
+        <div className={styles.icon} onClick={handleCopyClick}>
           <CopyOutlined />
         </div>
       </div>
@@ -96,7 +105,7 @@ const items: TabsProps["items"] = [
   },
 ];
 
-let timer: any = null;
+const UPDATE_INTERVAL = 60 * 1000;
 
 const Clipboard: React.FC = () => {
   const { clipBoradData } = useStore();
@@ -141,15 +150,9 @@ const Clipboard: React.FC = () => {
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);
 
-  useEffect(() => {
-    timer = setInterval(() => {
-      update(); // 强制重新渲染
-    }, 60 * 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  useInterval(() => {
+    update();
+  }, UPDATE_INTERVAL);
 
   return (
     <div className={styles.clipboardWrapper}>
@@ -165,7 +168,7 @@ const Clipboard: React.FC = () => {
         {contextHolder}
         {isLoading ? (
           <Loading />
-        ) : (
+        ) : !!dataSource.length ? (
           dataSource.map((item, index) => (
             <RenderItem
               item={item}
@@ -176,6 +179,8 @@ const Clipboard: React.FC = () => {
               key={"clipBorad" + index}
             />
           ))
+        ) : (
+          <EmptyPage />
         )}
       </div>
     </div>

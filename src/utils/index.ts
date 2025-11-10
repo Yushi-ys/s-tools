@@ -43,3 +43,24 @@ export const formatRelativeTime = (timestamp: number): string => {
 
   return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
 };
+
+/**
+ * 随机生成字符
+ * @param length
+ * @param rules
+ * @returns
+ */
+export const generateRandomString = (length: number, rules: string): string => {
+  const characterSets: Record<string, string> = {
+    only_num: "0123456789",
+    only_letter: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    num_letter:
+      "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  };
+
+  const characters = characterSets[rules] || characterSets.num_letter;
+
+  return Array.from({ length }, () =>
+    characters.charAt(Math.floor(Math.random() * characters.length))
+  ).join("");
+};
