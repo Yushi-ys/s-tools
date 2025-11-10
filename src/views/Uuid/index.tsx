@@ -4,7 +4,7 @@ import { generateRandomString } from "@/utils";
 
 import styles from "./index.module.less";
 
-const Uuid: React.FC = () => {
+const UuidPage: React.FC = () => {
   const [form] = Form.useForm();
   const [uuids, setUuids] = useState<string[]>([]);
   const { Title } = Typography;
@@ -81,4 +81,4 @@ const Uuid: React.FC = () => {
   );
 };
 
-export default Uuid;
+export default UuidPage;
