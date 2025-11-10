@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Menu, type MenuProps } from "antd";
-import { CopyOutlined } from "@ant-design/icons";
+import { CopyOutlined, NumberOutlined } from "@ant-design/icons";
 import { useRouter } from "@/hooks/useRouter";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -16,6 +16,14 @@ const Menus: React.FC = () => {
         icon: <CopyOutlined />,
         onClick: () => {
           push("/clipboard");
+        },
+      },
+            {
+        key: "uuid",
+        label: "Uuid",
+        icon: <NumberOutlined />,
+        onClick: () => {
+          push("/uuid");
         },
       },
     ];

@@ -1,40 +1,45 @@
-.tabs {
+.clipboardWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .tabs {
     :global(.ant-tabs-tab) {
-        width: 6rem !important;
-        justify-content: center !important;
+      width: 6rem !important;
+      justify-content: center !important;
     }
-}
+  }
 
-.dataSourceWrapper {
-    height: 100%;
+  .dataSourceWrapper {
+    flex: 1;
     overflow-y: scroll;
-}
+  }
 
-.renderItem {
+  .renderItem {
     margin-bottom: 0.1rem;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-
     .timestamp {
-        font-size: 0.7rem;
-        color: var(--text-tips-primary);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-right: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--text-tips-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 0.5rem;
 
-        .icon {
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
+      .icon {
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
 
-        .icon:hover {
-            color: var(--text-link-hover);
-        }
+      .icon:hover {
+        color: var(--text-link-hover);
+      }
     }
-}
+  }
 
-.selected {
+  .selected {
     border: 2px solid var(--select-border-color);
+  }
 }

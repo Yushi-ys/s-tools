@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
@@ -96,6 +96,8 @@ const items: TabsProps["items"] = [
   },
 ];
 
+let timer: any = null;
+
 const Clipboard: React.FC = () => {
   const { clipBoradData } = useStore();
   const [messageApi, contextHolder] = message.useMessage();
@@ -139,12 +141,18 @@ const Clipboard: React.FC = () => {
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);
 
-  setInterval(() => {
-    update(); // 强制重新渲染
-  }, 60 * 1000);
+  useEffect(() => {
+    timer = setInterval(() => {
+      update(); // 强制重新渲染
+    }, 60 * 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   return (
-    <>
+    <div className={styles.clipboardWrapper}>
       <div className={styles.tabs}>
         <Tabs
           defaultActiveKey={COPYKEYBOARDTYPE.ALL}
@@ -155,9 +163,10 @@ const Clipboard: React.FC = () => {
       </div>
       <div className={styles.dataSourceWrapper}>
         {contextHolder}
-        {isLoading
-          ? <Loading />
-          : dataSource.map((item, index) => (
+        {isLoading ? (
+          <Loading />
+        ) : (
+          dataSource.map((item, index) => (
             <RenderItem
               item={item}
               index={index}
@@ -166,9 +175,10 @@ const Clipboard: React.FC = () => {
               handleCopy={handleCopy}
               key={"clipBorad" + index}
             />
-          ))}
+          ))
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
