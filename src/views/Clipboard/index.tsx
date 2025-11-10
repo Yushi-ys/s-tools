@@ -107,7 +107,7 @@ const items: TabsProps["items"] = [
 
 const UPDATE_INTERVAL = 60 * 1000;
 
-const Clipboard: React.FC = () => {
+const ClipboardPage: React.FC = () => {
   const { clipBoradData } = useStore();
   const [messageApi, contextHolder] = message.useMessage();
   const update = useUpdate();
@@ -187,4 +187,4 @@ const Clipboard: React.FC = () => {
   );
 };
 
-export default Clipboard;
+export default ClipboardPage;
