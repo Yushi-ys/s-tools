@@ -14,3 +14,22 @@ export const enum COPYKEYBOARDTYPELABEL {
   TEXT = "文本",
   IMAGE = "图像",
 }
+
+// 支持的语言列表
+export const LANGUAGE_OPTIONS = [
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "java", label: "Java" },
+  { value: "python", label: "Python" },
+  { value: "php", label: "PHP" },
+  { value: "cpp", label: "C++" },
+  { value: "csharp", label: "C#" },
+  { value: "go", label: "Go" },
+  { value: "rust", label: "Rust" },
+  { value: "html", label: "HTML" },
+  { value: "css", label: "CSS" },
+  { value: "json", label: "JSON" },
+  { value: "xml", label: "XML" },
+  { value: "sql", label: "SQL" },
+  { value: "bash", label: "Bash" },
+];

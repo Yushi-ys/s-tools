@@ -70,7 +70,7 @@ const UuidPage: React.FC = () => {
       <div className={styles.content}>
         {uuids.map((item, index) => {
           return (
-            <Title level={5} copyable title="复制">
+            <Title level={5} copyable title="复制" key={"uuid" + index}>
               {`${index + 1}.  `}
               {item}
             </Title>
