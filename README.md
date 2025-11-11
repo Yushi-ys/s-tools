@@ -1,4 +1,4 @@
-# 翻译应用项目
+# tools 应用项目
 
 ## 技术栈
 - **前端**: React + TypeScript + Vite
