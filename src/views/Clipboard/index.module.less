@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  background-color: var(--bg-primary);
 
   .tabs {
     :global(.ant-tabs-tab) {
@@ -12,7 +13,7 @@
 
   .dataSourceWrapper {
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .renderItem {

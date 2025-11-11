@@ -1,6 +1,11 @@
 import React, { useMemo } from "react";
 import { Menu, type MenuProps } from "antd";
-import { CopyOutlined, DiffOutlined, NumberOutlined } from "@ant-design/icons";
+import {
+  CopyOutlined,
+  DiffOutlined,
+  NumberOutlined,
+  TranslationOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "@/hooks/useRouter";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -32,6 +37,14 @@ const Menus: React.FC = () => {
         icon: <DiffOutlined />,
         onClick: () => {
           push("/diff");
+        },
+      },
+      {
+        key: "translation",
+        label: "翻译",
+        icon: <TranslationOutlined />,
+        onClick: () => {
+          push("/translation");
         },
       },
     ];

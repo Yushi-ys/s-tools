@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, Form, InputNumber, Radio, Row, Typography } from "antd";
 import { generateRandomString } from "@/utils";
 

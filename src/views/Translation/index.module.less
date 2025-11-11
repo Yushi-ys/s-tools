@@ -1,0 +1,34 @@
+.translationWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-primary);
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+
+    .original-language-wrapper {
+      flex: 1;
+      box-shadow: none;
+      outline: none;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      font-size: 1.2rem;
+      overflow-y: auto;
+      color: var(--text-primary);
+    }
+
+    .translated-language-wrapper {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      font-size: 1.2rem;
+      overflow-y: auto;
+      color: var(--text-primary);
+    }
+  }
+}

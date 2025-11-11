@@ -28,6 +28,9 @@ const Header: React.FC = () => {
               styles.icon,
               online ? styles.wifi : styles["no-wifi"]
             )}
+            style={{
+              color: theme === THEMESTYLE.LIGHT ? "#000" : "#fff",
+            }}
             title={online ? "网络在线" : "离线了...."}
           />
         }
