@@ -61,6 +61,16 @@
         box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
       }
 
+      &.diffMode {
+        cursor: default;
+        border-style: solid;
+        
+        &:hover {
+          box-shadow: none;
+          border-color: #d9d9d9;
+        }
+      }
+
       .panelHeader {
         padding: 12px 16px;
         background: var(--bg-primary);
@@ -91,6 +101,18 @@
 
       .lineNumber {
         padding: 0 4px;
+        
+        &.diffLineAdded {
+          background-color: rgba(82, 196, 26, 0.2);
+          color: #52c41a;
+          font-weight: bold;
+        }
+        
+        &.diffLineRemoved {
+          background-color: rgba(255, 77, 79, 0.2);
+          color: #ff4d4f;
+          font-weight: bold;
+        }
       }
 
       .panelContent {
@@ -107,6 +129,42 @@
         .placeholder {
           color: #999;
           font-style: italic;
+        }
+
+        // 差异内容样式
+        .diffContent {
+          width: 100%;
+        }
+
+        .diffLine {
+          padding: 0 4px;
+          line-height: 1.5;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+          font-size: 14px;
+          
+          &.diffLineAdded {
+            background-color: rgba(82, 196, 26, 0.2);
+            color: #52c41a;
+            font-weight: 500;
+          }
+          
+          &.diffLineRemoved {
+            background-color: rgba(255, 77, 79, 0.2);
+            color: #ff4d4f;
+            font-weight: 500;
+            text-decoration: line-through;
+          }
+          
+          &.diffLineUnchanged {
+            color: #d4d4d4;
+          }
+        }
+
+        .emptyLine {
+          height: 1.5em;
+          line-height: 1.5;
         }
 
         // 覆盖 SyntaxHighlighter 的样式
@@ -135,6 +193,10 @@
         border-color: #ff4d4f;
         box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
       }
+      
+      &.diffMode {
+        border-color: #ff4d4f;
+      }
     }
 
     .rightPanel {
@@ -148,6 +210,10 @@
       &.active {
         border-color: #52c41a;
         box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+      }
+      
+      &.diffMode {
+        border-color: #52c41a;
       }
     }
   }

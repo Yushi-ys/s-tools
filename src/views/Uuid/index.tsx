@@ -28,10 +28,6 @@ const UuidPage: React.FC = () => {
     setUuids(generatedUuids);
   };
 
-  useEffect(() => {
-    onFormLayoutChange();
-  }, []);
-
   return (
     <div className={styles.container}>
       <Form

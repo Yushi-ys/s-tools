@@ -97,6 +97,14 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
+.ant-select-selector {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+.ant-btn-variant-outlined:disabled {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
 /* App.css 或全局样式文件 */
 
 /* 现代简约滚动条 */
