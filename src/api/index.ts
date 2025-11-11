@@ -21,7 +21,7 @@ export const baiduTranslate = async (props: IBaiduTranslateProps) => {
 
   const sign = getSign(appid, q, salt, appkey);
 
-  const res = await axios.post("http://localhost:3001/proxy/translate", {
+  const res = await axios.post("http://localhost:3002/proxy/translate", {
     q,
     from,
     to,

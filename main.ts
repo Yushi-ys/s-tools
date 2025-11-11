@@ -85,7 +85,7 @@ const createWindow = () => {
 
     if (isDev) {
         mainWindow.webContents.toggleDevTools()
-        const loadPath = 'http://localhost:5173/'
+        const loadPath = 'http://localhost:3001/'
         mainWindow.loadURL(loadPath);
     } else {
         mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
