@@ -6,6 +6,7 @@ import App from "@/App";
 const Clipboard = lazy(() => import("@/views/Clipboard"));
 const Uuid = lazy(() => import("@/views/Uuid"));
 const Diff = lazy(() => import("@/views/Diff"));
+const Translation = lazy(() => import("@/views/Translation"));
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: "diff",
         Component: Diff,
+      },
+      {
+        path: "translation",
+        Component: Translation,
       },
     ],
   },
