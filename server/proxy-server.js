@@ -24,6 +24,6 @@ app.post("/proxy/translate", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("Proxy server running on http://localhost:3001");
+app.listen(3002, () => {
+  console.log("Proxy server running on http://localhost:3002");
 });
