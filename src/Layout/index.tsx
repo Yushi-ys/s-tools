@@ -3,10 +3,12 @@ import { FloatButton, Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import Header from "@/layout/Header";
 import Menus from "@/layout/Menus";
+import { useRouteLogger } from "@/hooks/useRouteLogger";
 
 import styles from "./index.module.less";
 
 const Index: React.FC = () => {
+  useRouteLogger();
   const { Content, Sider } = Layout;
 
   return (

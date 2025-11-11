@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import { app } from "electron";
+import log from "electron-log";
+
 /**
  * 格式化时间戳为相对时间或绝对时间
  * @param timestamp
@@ -63,4 +67,15 @@ export const generateRandomString = (length: number, rules: string): string => {
   return Array.from({ length }, () =>
     characters.charAt(Math.floor(Math.random() * characters.length))
   ).join("");
+};
+
+export const getCurrentDate = () => dayjs().format("YYYY/MM/DD HH:mm:ss");
+
+export const Logger = (text: string, args?: any) => {
+  log.info(text, {
+    version: app.getVersion(),
+    platform: process.platform,
+    timestamp: getCurrentDate(),
+    ...args,
+  });
 };
