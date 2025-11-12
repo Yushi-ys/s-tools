@@ -33,3 +33,11 @@ export const LANGUAGE_OPTIONS = [
   { value: "sql", label: "SQL" },
   { value: "bash", label: "Bash" },
 ];
+
+export const COMMONLANGUAGES = [
+  { value: "zh", label: "中文" },
+  { value: "en", label: "英文" },
+  { value: "jp", label: "日语" },
+  { value: "fra", label: "法语" },
+  { value: "kor", label: "韩语" },
+];

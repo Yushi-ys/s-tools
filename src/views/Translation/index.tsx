@@ -1,22 +1,47 @@
 import { SwapOutlined } from "@ant-design/icons";
-import { Select, Space } from "antd";
-import { useEffect, useState } from "react";
-import { useDebounceFn, useMemoizedFn } from "ahooks";
+import { Button, message, Select, Space } from "antd";
+import { useRef, useState } from "react";
+import {
+  useDebounceFn,
+  useMemoizedFn,
+  useMount,
+  useUnmount,
+  useUpdateEffect,
+} from "ahooks";
 import { baiduTranslate } from "@/api";
+import useStore from "@/store/store";
+import { COMMONLANGUAGES } from "@/types/constants";
+import Loading from "@/components/Loading";
 
 import styles from "./index.module.less";
 
 const TranslationPage: React.FC = () => {
-  const [originalLanguage, setOriginalLanguage] = useState("zh"); // 原语言
-  const [translatedlLanguage, setTranslatedLanguage] = useState("en"); // 需要被翻译后的语言
-  const [originalText, setOriginalText] = useState(""); // 初始文本
-  const [translatedText, setTranslatedText] = useState(""); // 翻译之后的文本
+  const { translationData, setTranslationData } = useStore();
+  const editableRef = useRef<HTMLDivElement>(null);
+  const [originalLanguage, setOriginalLanguage] = useState(
+    translationData.originalLanguage
+  ); // 原语言
+  const [translatedlLanguage, setTranslatedLanguage] = useState(
+    translationData.translatedlLanguage
+  ); // 需要被翻译后的语言
+  const [originalText, setOriginalText] = useState(
+    translationData.originalText || ""
+  ); // 初始文本
+  const [translatedText, setTranslatedText] = useState(
+    translationData.translatedText || ""
+  ); // 翻译之后的文本
+  const [messageApi, contextHolder] = message.useMessage();
+  const [loading, setLoading] = useState(false);
+  // 是否切换了原语言和被翻译的语言，用来判断是否需要防抖请求
+  const [isLanguageChanging, setIsLanguageChanging] = useState(false);
 
   const handleOriginalLanguageChange = useMemoizedFn((val: string) => {
+    setIsLanguageChanging(true);
     setOriginalLanguage(val);
   });
 
   const handleTranslatedLanguageChange = useMemoizedFn((val: string) => {
+    setIsLanguageChanging(true);
     setTranslatedLanguage(val);
   });
 
@@ -25,59 +50,128 @@ const TranslationPage: React.FC = () => {
     setOriginalText(text);
   });
 
-  const { run: translate } = useDebounceFn(
-    async () => {
-      const res = await baiduTranslate({
-        q: originalText,
-        from: originalLanguage,
-        to: translatedlLanguage,
+  const copyTranslatedText = useMemoizedFn(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(translatedText);
+      messageApi.open({
+        type: "success",
+        content: "文本已复制到剪贴板",
       });
-      if (res.status == 200) {
-        const { data } = res;
-        setTranslatedText(data.trans_result[0].dst);
-      }
-    },
-    {
-      wait: 1000,
+    } catch (error) {
+      console.log("copyTranslatedText", error);
     }
-  );
+  });
 
-  useEffect(() => {
+  const handleTranslate = useMemoizedFn(async () => {
+    setLoading(true);
+    const res = await baiduTranslate({
+      q: originalText,
+      from: originalLanguage,
+      to: translatedlLanguage,
+    });
+    setLoading(false);
+    setIsLanguageChanging(false);
+    if (res.status == 200) {
+      const { data } = res;
+      setTranslatedText(data.trans_result[0].dst);
+    }
+  });
+
+  const handleSwapLanguage = useMemoizedFn(() => {
+    setIsLanguageChanging(true);
+
+    const newOriginalLanguage = translatedlLanguage;
+    const newTranslatedLanguage = originalLanguage;
+    const newOriginalText = translatedText;
+
+    setOriginalLanguage(newOriginalLanguage);
+    setTranslatedLanguage(newTranslatedLanguage);
+
+    if (newOriginalText.trim()) {
+      setTranslatedText("");
+    } else {
+      setTranslatedText(originalText);
+      setIsLanguageChanging(false);
+    }
+  });
+
+  const { run: debouncedTranslate } = useDebounceFn(handleTranslate, {
+    wait: 1000,
+  });
+
+  useUpdateEffect(() => {
     if (!!originalText.trim().length) {
-      translate();
+      if (isLanguageChanging) {
+        // 切换语言的时候不需要防抖
+        handleTranslate();
+      } else {
+        debouncedTranslate();
+      }
     } else {
       setTranslatedText("");
     }
-  }, [originalText]);
+  }, [originalText, originalLanguage, translatedlLanguage]);
+
+  useMount(() => {
+    if (editableRef.current) {
+      editableRef.current.textContent = translationData.originalText || "";
+    }
+  });
+
+  useUnmount(() => {
+    setTranslationData({
+      ...translationData,
+      originalText,
+      translatedText,
+      originalLanguage,
+      translatedlLanguage,
+    });
+  });
 
   return (
     <div className={styles.translationWrapper}>
-      {/* <div>
-        <Space align="center">
-          <Select
-            value={originalLanguage}
-            style={{ width: 120 }}
-            onChange={handleOriginalLanguageChange}
-            options={[{ value: "zh", label: "中文" }]}
-          />
-          <SwapOutlined />
-          <Select
-            value={translatedlLanguage}
-            style={{ width: 120 }}
-            onChange={handleTranslatedLanguageChange}
-            options={[{ value: "en", label: "英文" }]}
-          />
+      {contextHolder}
+      <div>
+        <Space className={styles.spaceWrapper}>
+          <Space>
+            <Select
+              disabled={loading}
+              value={originalLanguage}
+              style={{ width: 120 }}
+              onChange={handleOriginalLanguageChange}
+              options={COMMONLANGUAGES}
+            />
+            <SwapOutlined onClick={handleSwapLanguage} />
+            <Select
+              disabled={loading}
+              value={translatedlLanguage}
+              style={{ width: 120 }}
+              onChange={handleTranslatedLanguageChange}
+              options={COMMONLANGUAGES}
+            />
+          </Space>
+          <div className={styles.copy}>
+            <Button
+              type="primary"
+              onClick={copyTranslatedText}
+              disabled={loading}
+            >
+              复制结果
+            </Button>
+          </div>
         </Space>
-      </div> */}
+      </div>
       <div className={styles.content}>
         <div
+          ref={editableRef}
           className={styles["original-language-wrapper"]}
           contentEditable={true}
           onInput={handleInput}
           suppressContentEditableWarning={true}
         />
         <div className={styles["translated-language-wrapper"]}>
-          {translatedText}
+          {loading ? <Loading /> : translatedText}
         </div>
       </div>
     </div>
