@@ -133,6 +133,7 @@ const ClipboardPage: React.FC = () => {
 
       const success = await writeClipboard(item);
       if (success) {
+        updateSelectedIndex(0);
         messageApi.open({
           type: "success",
           content:
