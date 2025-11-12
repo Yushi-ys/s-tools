@@ -1,10 +1,11 @@
-import { SwapOutlined } from "@ant-design/icons";
-import { Button, message, Select, Space } from "antd";
+import { MehOutlined, SwapOutlined } from "@ant-design/icons";
+import { Button, Empty, message, Result, Select, Space } from "antd";
 import { useRef, useState } from "react";
 import {
   useDebounceFn,
   useMemoizedFn,
   useMount,
+  useNetwork,
   useUnmount,
   useUpdateEffect,
 } from "ahooks";
@@ -17,6 +18,7 @@ import styles from "./index.module.less";
 
 const TranslationPage: React.FC = () => {
   const { translationData, setTranslationData } = useStore();
+  const { online } = useNetwork();
   const editableRef = useRef<HTMLDivElement>(null);
   const [originalLanguage, setOriginalLanguage] = useState(
     translationData.originalLanguage
@@ -129,7 +131,7 @@ const TranslationPage: React.FC = () => {
     });
   });
 
-  return (
+  return online ? (
     <div className={styles.translationWrapper}>
       {contextHolder}
       <div>
@@ -175,6 +177,8 @@ const TranslationPage: React.FC = () => {
         </div>
       </div>
     </div>
+  ) : (
+    <Result icon={<MehOutlined />} title="这个功能需要联网...请检查网络连接" />
   );
 };
 
