@@ -1,19 +1,18 @@
-// hooks/useElectronClipboard.ts
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import useStore from "@/store/store";
 import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
+import { useMemoizedFn } from "ahooks";
 
 export const useElectronClipboard = () => {
   const { setClipBoradData, clipBoradData } = useStore();
   const [isMonitoring, setIsMonitoring] = useState(false);
 
-  // 检查是否在 Electron 环境中
-  const isElectron = useCallback(() => {
+  const isElectron = useMemoizedFn(() => {
     return !!(window && (window as any).electronAPI);
-  }, []);
+  });
 
   // 处理从 Electron 主进程传来的剪贴板数据
-  const handleClipboardChange = useCallback(
+  const handleClipboardChange = useMemoizedFn(
     (data: IClipboardItem) => {
       if (data.type === "text" && data.text && data.text.trim().length !== 0) {
         const newItem = {
@@ -46,7 +45,7 @@ export const useElectronClipboard = () => {
           timestamp: data.timestamp,
         } as IClipboardItem;
 
-        // 检查重复数据 - 对于图片，我们比较时间戳和尺寸
+        // 检查重复数据 - 比较时间戳和尺寸
         const isDuplicate = clipBoradData.some(
           (item) =>
             item.type === "image" &&
@@ -57,19 +56,17 @@ export const useElectronClipboard = () => {
         );
 
         if (!isDuplicate) {
-          // 可选：将 base64 转换为 blob 以便更好的存储和处理
           if (data.image.startsWith("data:image")) {
             setClipBoradData([newItem, ...clipBoradData]);
           }
         }
       } else {
       }
-    },
-    [setClipBoradData, clipBoradData]
+    }
   );
 
   // 开始监控
-  const startMonitoring = useCallback(() => {
+  const startMonitoring = useMemoizedFn(() => {
     if (!isElectron()) {
       return false;
     }
@@ -88,10 +85,10 @@ export const useElectronClipboard = () => {
     } catch (error) {
       return false;
     }
-  }, [isElectron, handleClipboardChange]);
+  });
 
   // 停止监控
-  const stopMonitoring = useCallback(() => {
+  const stopMonitoring = useMemoizedFn(() => {
     if (!isElectron()) return;
 
     try {
@@ -102,10 +99,10 @@ export const useElectronClipboard = () => {
     } catch (error) {
       return;
     }
-  }, [isElectron]);
+  });
 
   // 获取当前剪贴板内容
-  const getCurrentClipboard = useCallback(async (): Promise<string> => {
+  const getCurrentClipboard = useMemoizedFn(async (): Promise<string> => {
     if (!isElectron()) return "";
 
     try {
@@ -114,7 +111,7 @@ export const useElectronClipboard = () => {
     } catch (error) {
       return "";
     }
-  }, [isElectron]);
+  });
 
   // 组件卸载时停止监控
   useEffect(() => {

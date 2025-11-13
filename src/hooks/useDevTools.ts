@@ -1,6 +1,6 @@
-// hooks/useDevTools.ts
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useElectron } from "@/hooks/useElectron";
+import { useMemoizedFn } from "ahooks";
 
 interface IUseDevToolsReturn {
   toggleDevTools: () => void;
@@ -14,13 +14,13 @@ export const useDevTools = (): IUseDevToolsReturn => {
   const { send, isElectron } = useElectron();
 
   // 切换控制台
-  const toggleDevTools = useCallback((): void => {
+  const toggleDevTools = useMemoizedFn((): void => {
     if (isElectron) {
       send("toggle-devtools");
     }
-  }, [isElectron, send]);
+  });
 
-  const handleKeyDown = useCallback(
+  const handleKeyDown = useMemoizedFn(
     (event: KeyboardEvent): void => {
       if (event.key === "F12") {
         event.preventDefault();
@@ -35,8 +35,7 @@ export const useDevTools = (): IUseDevToolsReturn => {
       if (event.key === "Control" || event.code === "KeyR") {
         event.preventDefault();
       }
-    },
-    [toggleDevTools]
+    }
   );
 
   // 监听快捷键
