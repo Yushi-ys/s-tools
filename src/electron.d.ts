@@ -1,15 +1,47 @@
+// electron.d.ts 或 global.d.ts
+export interface ClipboardData {
+  type: 'text' | 'image';
+  text?: string;
+  image?: string;
+  width?: number;
+  height?: number;
+  timestamp: number;
+}
+
+export interface DatabaseResult {
+  success: boolean;
+  id?: number;
+  changes?: number;
+  error?: string;
+}
+
 export interface IElectronAPI {
-  // 窗口操作
+  // 窗口控制
   minimizeWindow: () => void;
   maximizeWindow: () => void;
   closeWindow: () => void;
-  
-  // 自定义事件
+
+  // 剪贴板监控
+  startClipboardMonitoring: () => void;
+  stopClipboardMonitoring: () => void;
+  getClipboardText: () => Promise<string>;
+
+  // 剪贴板事件监听
+  onClipboardChange: (callback: (data: ClipboardData) => void) => void;
+  removeClipboardListeners: () => void;
+
+  // 通用通信方法
   on: (channel: string, callback: (event: any, data: any) => void) => void;
   send: (channel: string, data?: any) => void;
-  invoke: (channel: string, data?: any) => Promise<any>;
-
+  invoke: <T = any>(channel: string, data?: any) => Promise<T>;
   removeAllListeners: (channel: string) => void;
+
+  // 数据库操作
+  db: {
+    getAllClipboardData: (limit?: number) => Promise<ClipboardData[]>;
+    addClipboardData: (data: ClipboardData) => Promise<DatabaseResult>;
+    getClipboardCount: () => Promise<number>;
+  };
 }
 
 declare global {

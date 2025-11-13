@@ -12,7 +12,7 @@ import {
   FileTextOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
-import { Flex, Image, message, Tabs, type TabsProps } from "antd";
+import { Flex, Image, message, Spin, Tabs, type TabsProps } from "antd";
 import { useInterval, useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";
@@ -149,6 +149,8 @@ const ClipboardPage: React.FC = () => {
   );
 
   const dataSource = useMemo(() => {
+    console.log("clipBoradData", clipBoradData);
+
     if (selectTab === COPYKEYBOARDTYPE.ALL) return clipBoradData;
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);

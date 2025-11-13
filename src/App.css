@@ -105,6 +105,14 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
+
+.ant-spin-nested-loading {
+  height: calc(100vh - 2rem);
+}
+.ant-spin-nested-loading > div > .ant-spin {
+  height: calc(100vh - 2rem);
+  max-height: none;
+}
 /* App.css 或全局样式文件 */
 
 /* 现代简约滚动条 */

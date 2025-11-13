@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Menu, type MenuProps } from "antd";
 import {
   CopyOutlined,
@@ -12,6 +12,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const Menus: React.FC = () => {
   const { push } = useRouter();
+  const [current, setCurrent] = useState('clipboard');
 
   const items: MenuItem[] = useMemo(() => {
     return [
@@ -50,9 +51,19 @@ const Menus: React.FC = () => {
     ];
   }, []);
 
+  const onClick: MenuProps["onClick"] = (e) => {
+    console.log("click ", e);
+    setCurrent(e.key);
+  };
+
   return (
     <div>
-      <Menu items={items} mode="vertical" />
+      <Menu
+        selectedKeys={[current]}
+        onClick={onClick}
+        items={items}
+        mode="vertical"
+      />
     </div>
   );
 };

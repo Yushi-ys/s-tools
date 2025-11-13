@@ -1,4 +1,5 @@
-import Database from "better-sqlite3";
+const Database = require("better-sqlite3");
+const path = require("path");
 
 class DatabaseService {
   constructor() {
@@ -7,6 +8,8 @@ class DatabaseService {
 
   initialize(dbPath = "app.db") {
     try {
+      const fullPath = path.resolve(dbPath);
+      console.log("数据库完整路径:", fullPath);
       this.db = new Database(dbPath);
       this.createTables();
       console.log("数据库初始化成功");
@@ -28,7 +31,7 @@ class DatabaseService {
       CREATE TABLE IF NOT EXISTS clipboard (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         json_data TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        update_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `;
 
@@ -47,13 +50,13 @@ class DatabaseService {
 
   /**
    * 获取所有剪切板数据
-   * @param {*} limit 数量限制
+   * @param
    * @returns
    */
   getAllClipboardData(limit = 1000) {
     try {
       const stmt = this.db.prepare(
-        "SELECT * FROM clipboard ORDER BY created_at DESC LIMIT ?"
+        "SELECT * FROM clipboard ORDER BY update_at DESC LIMIT ?"
       );
       const rows = stmt.all(limit);
 
@@ -80,7 +83,7 @@ class DatabaseService {
         "INSERT INTO clipboard (json_data) VALUES (?)"
       );
       stmt.run(jsonString);
-
+      console.log("addClipboardData sql执行成功");
       return {
         success: true,
       };
@@ -92,6 +95,18 @@ class DatabaseService {
       };
     }
   }
+
+  // 获取数据总数
+  getClipboardCount() {
+    try {
+      const stmt = this.db.prepare("SELECT COUNT(*) as count FROM clipboard");
+      const result = stmt.get();
+      return result.count;
+    } catch (error) {
+      console.error("获取数据总数失败：", error);
+      return 0;
+    }
+  }
 }
 
-export default new DatabaseService();
+module.exports = new DatabaseService();

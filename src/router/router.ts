@@ -14,6 +14,10 @@ export const router = createBrowserRouter([
     Component: App,
     children: [
       {
+        index: true, // 设置为默认路由
+        Component: Clipboard,
+      },
+      {
         path: "clipboard",
         Component: Clipboard,
       },

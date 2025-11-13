@@ -5,7 +5,7 @@ import Menus from "@/layout/Menus";
 
 import styles from "./index.module.less";
 
-const Index: React.FC = () => {
+const LayoutPage: React.FC = () => {
   const { Content, Sider } = Layout;
 
   return (
@@ -24,4 +24,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default LayoutPage;

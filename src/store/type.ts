@@ -2,10 +2,14 @@ import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
 import type { THEMESTYLE } from "@/types/constants";
 
 export interface StoreState {
+  closeWindowLoading: boolean;
+  setCloseWindowLoading: (closeWindowLoading: boolean) => void;
   theme: keyof typeof THEMESTYLE;
   setTheme: (theme: keyof typeof THEMESTYLE) => void;
   clipBoradData: IClipboardItem[];
-  setclipBoradData: (data: IClipboardItem[]) => void;
+  setClipBoradData: (data: IClipboardItem[]) => void;
+  clipBoradDataLoading: boolean;
+  setClipBoradDataLoading: (val: boolean) => void;
   diffData: {
     leftContent: string;
     rightContent: string;
