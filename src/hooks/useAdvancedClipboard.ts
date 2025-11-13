@@ -1,3 +1,4 @@
+import useStore from "@/store/store";
 import { useMemoizedFn } from "ahooks";
 import { useState } from "react";
 
@@ -11,6 +12,7 @@ export interface IClipboardItem {
   height?: number;
   blob: Blob | null;
   timestamp: number;
+  inDb?: boolean; // 是否已经存入数据库
 }
 
 interface IUseAdvancedClipboardReturn {
@@ -25,7 +27,7 @@ interface IUseAdvancedClipboardReturn {
  */
 export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setClipBoradDataLoading, clipBoradDataLoading } = useStore();
 
   /**
    * 写入剪贴板内容
@@ -33,7 +35,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
   const writeClipboard = useMemoizedFn(
     async (item: IClipboardItem): Promise<boolean> => {
       setError(null);
-      setIsLoading(true);
+      setClipBoradDataLoading(true);
 
       if (item.type === "text") {
         // 处理文本复制
@@ -41,7 +43,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
           throw new Error("Clipboard API 不支持");
         }
         await navigator.clipboard.writeText(item.data);
-        setIsLoading(false);
+        setClipBoradDataLoading(false);
         return true;
       } else if (item.type === "image" && item.blob) {
         // 处理图片复制
@@ -55,7 +57,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
         });
 
         await navigator.clipboard.write([clipboardItem]);
-        setIsLoading(false);
+        setClipBoradDataLoading(false);
         return true;
       } else if (item.type === "image" && item.data.startsWith("data:image")) {
         // 处理 base64 图片
@@ -67,7 +69,7 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
         });
 
         await navigator.clipboard.write([clipboardItem]);
-        setIsLoading(false);
+        setClipBoradDataLoading(false);
         return true;
       } else {
         throw new Error(`不支持的数据类型: ${item.type}`);
@@ -78,6 +80,6 @@ export const useAdvancedClipboard = (): IUseAdvancedClipboardReturn => {
   return {
     error,
     writeClipboard,
-    isLoading,
+    isLoading: clipBoradDataLoading,
   };
 };

@@ -6,8 +6,8 @@
     "name": "超爱徐老师的涛涛"
   },
   "license": "MIT",
-  "type": "module",
-  "main": "main.ts",
+  "type": "commonjs",
+  "main": "main.js",
   "scripts": {
     "dev": "concurrently \"vite --port 3001\" \"cross-env NODE_ENV=dev electron .\"",
     "build": "tsc -b && vite build",

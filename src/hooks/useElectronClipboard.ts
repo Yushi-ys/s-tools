@@ -4,7 +4,7 @@ import useStore from "@/store/store";
 import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
 
 export const useElectronClipboard = () => {
-  const { setclipBoradData, clipBoradData } = useStore();
+  const { setClipBoradData, clipBoradData } = useStore();
   const [isMonitoring, setIsMonitoring] = useState(false);
 
   // 检查是否在 Electron 环境中
@@ -32,7 +32,7 @@ export const useElectronClipboard = () => {
         );
 
         if (!isDuplicate) {
-          setclipBoradData([newItem, ...clipBoradData]);
+          setClipBoradData([newItem, ...clipBoradData]);
         }
       } else if (data.type === "image" && data.image) {
         // 处理图片数据
@@ -59,13 +59,13 @@ export const useElectronClipboard = () => {
         if (!isDuplicate) {
           // 可选：将 base64 转换为 blob 以便更好的存储和处理
           if (data.image.startsWith("data:image")) {
-            setclipBoradData([newItem, ...clipBoradData]);
+            setClipBoradData([newItem, ...clipBoradData]);
           }
         }
       } else {
       }
     },
-    [setclipBoradData, clipBoradData]
+    [setClipBoradData, clipBoradData]
   );
 
   // 开始监控

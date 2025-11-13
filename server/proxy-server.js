@@ -1,5 +1,7 @@
-import express, { json } from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
+const { json } = express;
+
 const app = express();
 
 app.use(cors());

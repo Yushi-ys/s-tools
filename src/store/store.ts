@@ -4,12 +4,18 @@ import { THEMESTYLE } from "../types/constants";
 import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
 
 const useStore = create<StoreState>((set) => ({
+  closeWindowLoading: false,
+  setCloseWindowLoading: (closeWindowLoading: boolean) =>
+    set(() => ({ closeWindowLoading })),
   // 主题色
   theme: THEMESTYLE.LIGHT,
   setTheme: (theme: keyof typeof THEMESTYLE) => set(() => ({ theme })),
   clipBoradData: [],
-  setclipBoradData: (data: IClipboardItem[]) =>
+  setClipBoradData: (data: IClipboardItem[]) =>
     set(() => ({ clipBoradData: data })),
+  clipBoradDataLoading: false,
+  setClipBoradDataLoading: (val: boolean) =>
+    set(() => ({ clipBoradDataLoading: val })),
   diffData: {
     leftContent: "",
     rightContent: "",
