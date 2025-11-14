@@ -1,15 +1,34 @@
-import { useMemo } from "react";
-import { Button, Col, Form, InputNumber, Radio, Row, Typography } from "antd";
+import {
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import {
+  Button,
+  Col,
+  Form,
+  InputNumber,
+  message,
+  Radio,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import { generateRandomString } from "@/utils";
 import useStore from "@/store/store";
-import { useMemoizedFn } from "ahooks";
-
+import { useMemoizedFn, useVirtualList } from "ahooks";
 import styles from "./index.module.less";
 
 const UuidPage: React.FC = () => {
   const { uuidData, setUuidData } = useStore();
   const [form] = Form.useForm();
-  const { Title } = Typography;
+  const [messageApi, contextHolder] = message.useMessage();
+  const [copyLoading, setCopyLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const containerRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const { Paragraph } = Typography;
 
   const initialValues = useMemo(
     () => ({
@@ -19,6 +38,25 @@ const UuidPage: React.FC = () => {
     }),
     [uuidData]
   );
+
+  // const onFormLayoutChange = useMemoizedFn(() => {
+  //   const { character_length, generation_rules, sum } =
+  //     form.getFieldsValue() || {};
+  //   startTransition(() => {
+  //     // 生成指定数量的UUID
+  //     for (let i = 0; i < sum; i++) {
+  //       const uuid = generateRandomString(character_length, generation_rules);
+  //       generatedUuids.push(uuid);
+  //     }
+  //     setUuidData({
+  //       ...uuidData,
+  //       uuids: generatedUuids,
+  //       character_length,
+  //       generation_rules,
+  //       sum,
+  //     });
+  //   });
+  // });
 
   const onFormLayoutChange = useMemoizedFn(() => {
     const { character_length, generation_rules, sum } =
@@ -38,8 +76,32 @@ const UuidPage: React.FC = () => {
     });
   });
 
+  const handleCopyAll = useMemoizedFn(async () => {
+    setCopyLoading(true);
+    const allUuids = uuidData.uuids.join("\n");
+    await navigator.clipboard.writeText(allUuids);
+    setCopyLoading(false);
+    messageApi.open({
+      type: "success",
+      content: "已复制到剪贴板",
+    });
+  });
+
+  // const originalList = useMemo(() => uuidData.uuids, [uuidData.uuids]);
+
+  /**
+   * 注意：originalList 必须经过 useMemo 处理或者永不变化，否则会死循环 - ahooks官方文档提到的
+   */
+  const [uuidList] = useVirtualList(uuidData.uuids, {
+    containerTarget: containerRef,
+    wrapperTarget: wrapperRef,
+    itemHeight: 60,
+    overscan: 10,
+  });
+
   return (
     <div className={styles.container}>
+      {contextHolder}
       <Form
         className={styles.formWrapper}
         layout="inline"
@@ -68,20 +130,42 @@ const UuidPage: React.FC = () => {
           </Col>
         </Row>
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" onClick={onFormLayoutChange}>
-            生成
-          </Button>
+          <Space>
+            <Button type="primary" onClick={onFormLayoutChange}>
+              生成
+            </Button>
+            <Button
+              onClick={handleCopyAll}
+              loading={copyLoading}
+              disabled={!uuidData.uuids.length}
+            >
+              一键复制所有
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
       <div className={styles.content}>
-        {uuidData.uuids.map((item, index) => {
-          return (
-            <Title level={5} copyable title="复制" key={"uuid" + index}>
-              {`${index + 1}.  `}
-              {item}
-            </Title>
-          );
-        })}
+        {/* {isPending ? (
+          <span>加载中...</span>
+        ) : ( */}
+        <div ref={containerRef} style={{ overflow: "auto", minHeight: "1px" }}>
+          <div ref={wrapperRef}>
+            {uuidList.map((item) => {
+              return (
+                <Paragraph
+                  className={styles["uuit-item"]}
+                  copyable={{ tooltips: ["复制这个uuid", "已复制"] }}
+                  ellipsis={{ rows: 1, expandable: false }}
+                  key={"uuid" + item.index}
+                >
+                  <span className={styles.no}>No. {item.index + 1}</span>
+                  {item.data}
+                </Paragraph>
+              );
+            })}
+          </div>
+        </div>
+        {/* )} */}
       </div>
     </div>
   );
