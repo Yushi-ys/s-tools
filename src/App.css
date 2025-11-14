@@ -97,8 +97,14 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
+.ant-btn-variant-solid:disabled {
+  color: var(--text-primary);
+}
 .ant-select-selector {
   background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+.ant-select .ant-select-arrow {
   color: var(--text-primary) !important;
 }
 .ant-btn-variant-outlined:disabled {
