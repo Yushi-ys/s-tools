@@ -1,21 +1,26 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import { Button, Col, Form, InputNumber, Radio, Row, Typography } from "antd";
 import { generateRandomString } from "@/utils";
+import useStore from "@/store/store";
+import { useMemoizedFn } from "ahooks";
 
 import styles from "./index.module.less";
 
 const UuidPage: React.FC = () => {
+  const { uuidData, setUuidData } = useStore();
   const [form] = Form.useForm();
-  const [uuids, setUuids] = useState<string[]>([]);
   const { Title } = Typography;
 
-  const initialValues = {
-    character_length: 10,
-    generation_rules: "only_num",
-    sum: 1,
-  };
+  const initialValues = useMemo(
+    () => ({
+      character_length: uuidData.character_length,
+      generation_rules: uuidData.generation_rules,
+      sum: uuidData.sum,
+    }),
+    [uuidData]
+  );
 
-  const onFormLayoutChange = () => {
+  const onFormLayoutChange = useMemoizedFn(() => {
     const { character_length, generation_rules, sum } =
       form.getFieldsValue() || {};
     // 生成指定数量的UUID
@@ -24,9 +29,14 @@ const UuidPage: React.FC = () => {
       const uuid = generateRandomString(character_length, generation_rules);
       generatedUuids.push(uuid);
     }
-
-    setUuids(generatedUuids);
-  };
+    setUuidData({
+      ...uuidData,
+      uuids: generatedUuids,
+      character_length,
+      generation_rules,
+      sum,
+    });
+  });
 
   return (
     <div className={styles.container}>
@@ -64,7 +74,7 @@ const UuidPage: React.FC = () => {
         </Form.Item>
       </Form>
       <div className={styles.content}>
-        {uuids.map((item, index) => {
+        {uuidData.uuids.map((item, index) => {
           return (
             <Title level={5} copyable title="复制" key={"uuid" + index}>
               {`${index + 1}.  `}
