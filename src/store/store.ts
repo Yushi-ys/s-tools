@@ -22,6 +22,9 @@ const useStore = create<StoreState>((set) => ({
   clipBoradData: [],
   setClipBoradData: (data: IClipboardItem[]) =>
     set(() => ({ clipBoradData: data })),
+  clipBoradFirstRender: true,
+  setClipBoradFirstRender: (newVal: boolean) =>
+    set(() => ({ clipBoradFirstRender: newVal })),
   clipBoradDataLoading: false,
   setClipBoradDataLoading: (newVal: boolean) =>
     set(() => ({ clipBoradDataLoading: newVal })),

@@ -6,6 +6,7 @@
 export const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
   const diff = now - timestamp;
+  console.log("formatRelativeTime", now, diff);
 
   // 1分钟以内
   if (diff < 60 * 1000) {

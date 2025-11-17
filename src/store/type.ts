@@ -25,6 +25,8 @@ export interface StoreState {
   theme: keyof typeof THEMESTYLE;
   setTheme: (theme: keyof typeof THEMESTYLE) => void;
   clipBoradData: IClipboardItem[];
+  clipBoradFirstRender: boolean;
+  setClipBoradFirstRender: (newVal: boolean) => void;
   setClipBoradData: (data: IClipboardItem[]) => void;
   clipBoradDataLoading: boolean;
   setClipBoradDataLoading: (newVal: boolean) => void;
