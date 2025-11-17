@@ -7,6 +7,7 @@ const Clipboard = lazy(() => import("@/views/Clipboard"));
 const Uuid = lazy(() => import("@/views/Uuid"));
 const Diff = lazy(() => import("@/views/Diff"));
 const Translation = lazy(() => import("@/views/Translation"));
+const Scrape = lazy(() => import("@/views/Scrape"));
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "translation",
         Component: Translation,
+      },
+      {
+        path: "scrape",
+        Component: Scrape,
       },
     ],
   },

@@ -149,8 +149,6 @@ const ClipboardPage: React.FC = () => {
   );
 
   const dataSource = useMemo(() => {
-    console.log("clipBoradData", clipBoradData);
-
     if (selectTab === COPYKEYBOARDTYPE.ALL) return clipBoradData;
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);

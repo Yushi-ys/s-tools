@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Menu, type MenuProps } from "antd";
 import {
+  BugOutlined,
   CopyOutlined,
   DiffOutlined,
   NumberOutlined,
@@ -12,7 +13,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const Menus: React.FC = () => {
   const { push } = useRouter();
-  const [current, setCurrent] = useState('clipboard');
+  const [current, setCurrent] = useState("clipboard");
 
   const items: MenuItem[] = useMemo(() => {
     return [
@@ -48,11 +49,18 @@ const Menus: React.FC = () => {
           push("/translation");
         },
       },
+      {
+        key: "scrape",
+        label: "爬取视频",
+        icon: <BugOutlined />,
+        onClick: () => {
+          push("/scrape");
+        },
+      },
     ];
   }, []);
 
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
   };
 

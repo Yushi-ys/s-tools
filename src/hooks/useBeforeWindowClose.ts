@@ -42,6 +42,4 @@ export const useBeforeWindowClose = () => {
         });
 
     }, [on, invoke, setCloseWindowLoading, clipBoradData]);
-
-    
 }
