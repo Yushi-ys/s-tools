@@ -12,7 +12,7 @@ import {
   FileTextOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
-import { Flex, Image, message, Spin, Tabs, type TabsProps } from "antd";
+import { Flex, Image, message, Tabs, type TabsProps } from "antd";
 import { useInterval, useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";

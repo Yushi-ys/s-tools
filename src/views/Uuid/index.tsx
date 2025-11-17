@@ -2,7 +2,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useTransition,
 } from "react";
 import {
   Button,
@@ -25,7 +24,6 @@ const UuidPage: React.FC = () => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [copyLoading, setCopyLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const containerRef = useRef(null);
   const wrapperRef = useRef(null);
   const { Paragraph } = Typography;
