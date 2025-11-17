@@ -1,4 +1,3 @@
-// 这是主进程 主要的一个工作就是打开渲染进程
 const { app, BrowserWindow, ipcMain, clipboard } = require("electron");
 const path = require("path");
 
@@ -74,15 +73,13 @@ const createWindow = () => {
     width: 1400,
     height: 800,
     webPreferences: {
-      // 使用 path.resolve 好处
-      // 1：Windows 使用反斜杠 (\)，而 Unix 系统使用正斜杠 (/)。path.resolve 会自动处理这些差异，确保路径在不同操作系统上一致。
-      // 2：path.resolve 会将路径解析为绝对路径，确保在不同操作系统上都能找到正确的文件。
       preload: isDev
         ? path.join(process.cwd(), "preload.js")
         : path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
       webviewTag: true,
+      partition: "persist:main", // 使用持久化分区
     },
     frame: false,
   });
@@ -94,7 +91,9 @@ const createWindow = () => {
     const loadPath = "http://localhost:3001/";
     mainWindow.loadURL(loadPath);
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+    mainWindow.webContents.toggleDevTools();
+    // 生产环境：修正路径
+    mainWindow.loadFile(path.join(__dirname, "dist/index.html"));
   }
 
   // 窗口控制
@@ -159,6 +158,7 @@ const createWindow = () => {
   // 窗口关闭时清理资源
   mainWindow.on("closed", () => {
     stopClipboardMonitoring();
+    mainWindow = null;
   });
 };
 
@@ -176,5 +176,7 @@ app.on("window-all-closed", () => {
 
 // 监听窗口唤醒
 app.on("activate", () => {
-  createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });

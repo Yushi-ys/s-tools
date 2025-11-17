@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 import App from "@/App";
 
 // 页面组件懒加载
@@ -9,7 +9,7 @@ const Diff = lazy(() => import("@/views/Diff"));
 const Translation = lazy(() => import("@/views/Translation"));
 const Scrape = lazy(() => import("@/views/Scrape"));
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: App,

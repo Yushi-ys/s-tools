@@ -13,13 +13,24 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "pack": "cross-env NODE_ENV=prod electron-builder --win",
+    "pack": "npm run build && cross-env NODE_ENV=prod electron-builder",
+    "dist": "npm run build && cross-env NODE_ENV=prod electron-builder --publish=never",
     "start:node": "echo \"🚀 启动后端开发服务器...\" && cd ./server && node proxy-server.js",
     "start:electron": "echo \"🎯 启动前端服务...\" && npm run dev"
   },
   "build": {
     "appId": "com.19990703.sTools",
     "productName": "sTools",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js",
+      "src/db/**/*",
+      "node_modules/**/*"
+    ],
     "win": {
       "icon": "public/icon.ico",
       "target": "nsis"
