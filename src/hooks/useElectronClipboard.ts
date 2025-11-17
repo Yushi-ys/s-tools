@@ -23,13 +23,13 @@ export const useElectronClipboard = () => {
     console.log("handleClipboardChange", clipBoradData, data);
 
     if (data.type === "text" && data.text && data.text.trim().length !== 0) {
-      // if (
-      //   _.isEqual(data.text, clipBoradData?.[0].data) &&
-      //   clipBoradFirstRender
-      // ) {
-      //   setClipBoradFirstRender(false);
-      //   return;
-      // }
+      if (
+        _.isEqual(data.text, clipBoradData?.[0].data) &&
+        clipBoradFirstRender
+      ) {
+        setClipBoradFirstRender(false);
+        return;
+      }
       const newItem = {
         type: data.type,
         data: data.text,
@@ -49,13 +49,13 @@ export const useElectronClipboard = () => {
         setClipBoradData([newItem, ...clipBoradData]);
       }
     } else if (data.type === "image" && data.image) {
-      // if (
-      //   _.isEqual(data.image, clipBoradData?.[0].data) &&
-      //   clipBoradFirstRender
-      // ) {
-      //   setClipBoradFirstRender(false);
-      //   return;
-      // }
+      if (
+        _.isEqual(data.image, clipBoradData?.[0].data) &&
+        clipBoradFirstRender
+      ) {
+        setClipBoradFirstRender(false);
+        return;
+      }
       // 处理图片数据
       const newItem = {
         type: data.type,
