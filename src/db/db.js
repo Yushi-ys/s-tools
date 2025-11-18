@@ -1,16 +1,28 @@
 const Database = require("better-sqlite3");
+const { app } = require("electron");
 const path = require("path");
+const fs = require("fs");
 
 class DatabaseService {
   constructor() {
     this.db = null;
   }
 
-  initialize(dbPath = "app.db") {
+  initialize() {
     try {
+      // 使用 Electron 的用户数据目录
+      const userDataPath = app.getPath("userData");
+      const dbPath = path.join(userDataPath, "stools-db", "app.db");
+
+      // 确保目录存在
+      const dbDir = path.dirname(dbPath);
+      if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+      }
+
       const fullPath = path.resolve(dbPath);
       console.log("数据库完整路径:", fullPath);
-      this.db = new Database(dbPath);
+      this.db = new Database(fullPath);
       this.createTables();
       console.log("数据库初始化成功");
     } catch (error) {

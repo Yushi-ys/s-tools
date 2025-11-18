@@ -119,6 +119,10 @@ body {
   height: calc(100vh - 2rem);
   max-height: none;
 }
+
+.ant-typography {
+  margin-bottom: 0 !important;
+}
 /* App.css 或全局样式文件 */
 
 /* 现代简约滚动条 */
