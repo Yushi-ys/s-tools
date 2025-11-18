@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { useElectron } from "@/hooks/useElectron";
 import { useMemoizedFn } from "ahooks";
-import { isDev } from "@/utils";
-
 interface IUseDevToolsReturn {
   toggleDevTools: () => void;
 }
