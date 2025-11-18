@@ -91,7 +91,7 @@ const createWindow = () => {
     const loadPath = "http://localhost:3001/";
     mainWindow.loadURL(loadPath);
   } else {
-    mainWindow.webContents.toggleDevTools();
+    // mainWindow.webContents.toggleDevTools();
     // 生产环境：修正路径
     mainWindow.loadFile(path.join(__dirname, "dist/index.html"));
   }
