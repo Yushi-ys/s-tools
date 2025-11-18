@@ -22,8 +22,8 @@ export const useDevTools = (): IUseDevToolsReturn => {
   });
 
   const handleKeyDown = useMemoizedFn(
-    (event: KeyboardEvent): void => {
-      if (event.key === "F12" && isDev) {
+    (event: KeyboardEvent): void => {      
+      if (event.key === "F12") {
         event.preventDefault();
         toggleDevTools();
       }
