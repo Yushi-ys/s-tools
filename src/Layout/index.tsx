@@ -1,5 +1,5 @@
 import React from "react";
-import { FloatButton, Layout } from "antd";
+import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import Menus from "@/layout/Menus";
 
@@ -17,7 +17,6 @@ const LayoutPage: React.FC = () => {
       <Layout className={styles.innerLayoutWrapper}>
         <Content className={styles.content}>
           <Outlet />
-          <FloatButton.BackTop />
         </Content>
       </Layout>
     </Layout>

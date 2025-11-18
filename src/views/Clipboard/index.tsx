@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
@@ -12,7 +12,16 @@ import {
   FileTextOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
-import { Flex, Image, message, Tabs, type TabsProps } from "antd";
+import {
+  Flex,
+  FloatButton,
+  Image,
+  message,
+  Space,
+  Tabs,
+  Typography,
+  type TabsProps,
+} from "antd";
 import { useInterval, useMemoizedFn, useUpdate } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";
@@ -28,6 +37,10 @@ interface IRenderItemProps {
   handleCopy: (e: React.MouseEvent, item: IClipboardItem) => void;
 }
 
+const { Paragraph } = Typography;
+
+const UPDATE_INTERVAL = 60 * 1000;
+
 const RenderItem = ({
   item,
   index,
@@ -36,11 +49,23 @@ const RenderItem = ({
   selectIndex,
 }: IRenderItemProps) => {
   const { type, data, width, height } = item;
+  const [expanded, setExpanded] = useState(false);
 
   const renderContent = useMemo(() => {
     switch (type) {
       case "text":
-        return <div>{data}</div>;
+        return (
+          <Paragraph
+            ellipsis={{
+              rows: 4,
+              expandable: "collapsible",
+              expanded,
+              onExpand: (_, info) => setExpanded(info.expanded),
+            }}
+          >
+            {data}
+          </Paragraph>
+        );
 
       case "image":
         return (
@@ -49,17 +74,14 @@ const RenderItem = ({
             justify="space-between"
             style={{ paddingRight: "0.5rem" }}
           >
-            <Image width={100} height={100} src={data} />
-            <div>
-              {width} × {height}
-            </div>
+            <Image height={100} src={data} style={{ minWidth: "100px" }} />
           </Flex>
         );
 
       default:
         return null;
     }
-  }, [type, data, width, height]);
+  }, [type, data, width, height, expanded]);
 
   const handleClick = useMemoizedFn(() => {
     updateSelectedIndex(index);
@@ -78,7 +100,14 @@ const RenderItem = ({
     >
       <div>{renderContent}</div>
       <div className={styles.timestamp}>
-        <div>{formatRelativeTime(item.timestamp!)}</div>
+        <Space>
+          {formatRelativeTime(item.timestamp!)}
+          {type === "image" && (
+            <div>
+              {width} × {height}
+            </div>
+          )}
+        </Space>
         <div className={styles.icon} onClick={handleCopyClick}>
           <CopyOutlined />
         </div>
@@ -105,8 +134,6 @@ const items: TabsProps["items"] = [
   },
 ];
 
-const UPDATE_INTERVAL = 60 * 1000;
-
 const ClipboardPage: React.FC = () => {
   const { clipBoradData } = useStore();
   const [messageApi, contextHolder] = message.useMessage();
@@ -115,6 +142,7 @@ const ClipboardPage: React.FC = () => {
   // 剪切板数据列表，点击选中的第几个
   const [selectIndex, setSelectIndex] = useState<number>(0);
   const [selectTab, setSelectTab] = useState<string>(COPYKEYBOARDTYPE.ALL);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const updateSelectedIndex = useMemoizedFn((index: number) => {
     setSelectIndex(index);
@@ -165,7 +193,7 @@ const ClipboardPage: React.FC = () => {
           onChange={handleChangeTab}
         />
       </div>
-      <div className={styles.dataSourceWrapper}>
+      <div className={styles.dataSourceWrapper} ref={scrollContainerRef}>
         {contextHolder}
         {isLoading ? (
           <Loading />
@@ -183,6 +211,9 @@ const ClipboardPage: React.FC = () => {
         ) : (
           <EmptyPage />
         )}
+        <FloatButton.BackTop
+          target={() => scrollContainerRef.current as HTMLElement}
+        />
       </div>
     </div>
   );

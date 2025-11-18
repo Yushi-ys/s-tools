@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useElectron } from "@/hooks/useElectron";
 import { useMemoizedFn } from "ahooks";
+import { isDev } from "@/utils";
 
 interface IUseDevToolsReturn {
   toggleDevTools: () => void;
@@ -22,7 +23,7 @@ export const useDevTools = (): IUseDevToolsReturn => {
 
   const handleKeyDown = useMemoizedFn(
     (event: KeyboardEvent): void => {
-      if (event.key === "F12") {
+      if (event.key === "F12" && isDev) {
         event.preventDefault();
         toggleDevTools();
       }

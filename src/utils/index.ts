@@ -6,7 +6,6 @@
 export const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
   const diff = now - timestamp;
-  console.log("formatRelativeTime", now, diff);
 
   // 1分钟以内
   if (diff < 60 * 1000) {
@@ -65,3 +64,6 @@ export const generateRandomString = (length: number, rules: string): string => {
     characters.charAt(Math.floor(Math.random() * characters.length))
   ).join("");
 };
+
+// 是否是dev环境
+export const isDev = process.env.NODE_ENV === "dev";

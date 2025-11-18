@@ -20,11 +20,9 @@ export const useElectronClipboard = () => {
   // 处理从 Electron 主进程传来的剪贴板数据
   const handleClipboardChange = useMemoizedFn((data: IClipboardItem) => {
     // app 启动的时候，会读取数据库的本地剪切板数据，但是本地数据库的第一条数据 和 系统读取到的目前剪切板第一条是重复的，不需要追加上去
-    console.log("handleClipboardChange", clipBoradData, data);
-
     if (data.type === "text" && data.text && data.text.trim().length !== 0) {
       if (
-        _.isEqual(data.text, clipBoradData?.[0].data) &&
+        _.isEqual(data.text, clipBoradData?.[0]?.data) &&
         clipBoradFirstRender
       ) {
         setClipBoradFirstRender(false);
@@ -50,7 +48,7 @@ export const useElectronClipboard = () => {
       }
     } else if (data.type === "image" && data.image) {
       if (
-        _.isEqual(data.image, clipBoradData?.[0].data) &&
+        _.isEqual(data.image, clipBoradData?.[0]?.data) &&
         clipBoradFirstRender
       ) {
         setClipBoradFirstRender(false);
