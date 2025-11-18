@@ -38,7 +38,17 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
-    }
+    },
+    "extraResources": [
+      {
+        "from": "public/icon.jpg",
+        "to": "public/icon.jpg"
+      },
+      {
+        "from": "public/icon.ico",
+        "to": "public/icon.ico"
+      }
+    ]
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",

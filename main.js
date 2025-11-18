@@ -1,4 +1,12 @@
-const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  clipboard,
+  Tray,
+  Menu,
+  nativeImage,
+} = require("electron");
 const path = require("path");
 
 const databaseService = require("./src/db/db.js");
@@ -14,52 +22,54 @@ let appTray = null;
 const createTray = () => {
   try {
     let trayIconPath;
-    
+
     if (isDev) {
-      trayIconPath = path.join(process.cwd(), 'public', 'icon.jpg');
+      trayIconPath = path.join(process.cwd(), "public", "icon.jpg");
     } else {
-      trayIconPath = path.join(process.resourcesPath, 'app.asar.unpacked', 'public', 'icon.jpg');
-      if (!require('fs').existsSync(trayIconPath)) {
-        trayIconPath = path.join(__dirname, 'public', 'icon.jpg');
+      trayIconPath = path.join(process.resourcesPath, "public", "icon.jpg");
+      if (!require("fs").existsSync(trayIconPath)) {
+        trayIconPath = path.join(__dirname, "public", "icon.jpg");
       }
     }
-    
-    console.log('托盘图标路径:', trayIconPath);
-    
+
+    console.log("托盘图标路径:", trayIconPath);
+
     let trayIcon;
-    if (require('fs').existsSync(trayIconPath)) {
+    if (require("fs").existsSync(trayIconPath)) {
       trayIcon = nativeImage.createFromPath(trayIconPath);
     } else {
-      console.log('未找到图标文件，使用默认图标');
-      trayIcon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+      console.log("未找到图标文件，使用默认图标");
+      trayIcon = nativeImage.createFromDataURL(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+      );
     }
 
     appTray = new Tray(trayIcon.resize({ width: 16, height: 16 }));
-    
-    appTray.setToolTip('sTools');
-    
+
+    appTray.setToolTip("sTools");
+
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: '显示窗口',
+        label: "显示窗口",
         click: () => {
           if (mainWindow) {
             mainWindow.show();
             mainWindow.focus();
           }
-        }
+        },
       },
-      { type: 'separator' },
+      { type: "separator" },
       {
-        label: '退出 sTools',
+        label: "退出 sTools",
         click: () => {
           closeAppWithDataSave();
-        }
-      }
+        },
+      },
     ]);
-    
+
     appTray.setContextMenu(contextMenu);
-  
-    appTray.on('click', () => {
+
+    appTray.on("click", () => {
       if (mainWindow) {
         if (mainWindow.isVisible()) {
           mainWindow.hide();
@@ -69,51 +79,50 @@ const createTray = () => {
         }
       }
     });
-    
-    appTray.on('double-click', () => {
+
+    appTray.on("double-click", () => {
       if (mainWindow) {
         mainWindow.show();
         mainWindow.focus();
       }
     });
-
   } catch (error) {
-    console.error('创建托盘失败:', error);
+    console.error("创建托盘失败:", error);
   }
 };
 
 const closeAppWithDataSave = () => {
   // 设置退出标志
   app.isQuitting = true;
-  
+
   if (mainWindow) {
     console.log("开始保存数据并退出...");
-    
+
     // 发送保存数据信号到渲染进程
     mainWindow.webContents.send("toggle-window-loading-changed");
-    
+
     // 监听保存完成事件
     const saveCompleteHandler = () => {
       console.log("数据保存完成，退出应用");
-      
+
       // 清理监听器
       ipcMain.removeListener("save-data-complete", saveCompleteHandler);
-      
+
       // 清理资源
       stopClipboardMonitoring();
-      
+
       // 销毁托盘
       if (appTray) {
         appTray.destroy();
         appTray = null;
       }
-      
+
       // 退出应用
       app.quit();
     };
-    
+
     ipcMain.once("save-data-complete", saveCompleteHandler);
-    
+
     const timeoutId = setTimeout(() => {
       console.log("保存数据超时，强制退出");
       ipcMain.removeListener("save-data-complete", saveCompleteHandler);
@@ -128,7 +137,6 @@ const closeAppWithDataSave = () => {
     ipcMain.once("save-data-complete", () => {
       clearTimeout(timeoutId);
     });
-    
   } else {
     app.quit();
   }
@@ -180,7 +188,7 @@ const startClipboardMonitoring = (mainWindow) => {
         }
       }
     } catch (error) {
-      console.error('剪贴板监控错误:', error);
+      console.error("剪贴板监控错误:", error);
     }
   }, 500);
 };
@@ -207,9 +215,9 @@ const createWindow = () => {
     },
     frame: false,
     // 可选：设置任务栏图标
-    icon: isDev 
-      ? path.join(process.cwd(), 'public', 'icon.jpg')
-      : path.join(__dirname, 'public', 'icon.jpg')
+    icon: isDev
+      ? path.join(process.cwd(), "public", "icon.jpg")
+      : path.join(__dirname, "public", "icon.jpg"),
   });
 
   databaseService.initialize();
@@ -245,13 +253,13 @@ const createWindow = () => {
     console.log("点击关闭按钮，隐藏到托盘");
     // 隐藏窗口而不是关闭
     mainWindow.hide();
-    
+
     // 显示托盘通知
-    if (appTray && process.platform === 'win32') {
+    if (appTray && process.platform === "win32") {
       appTray.displayBalloon({
-        title: 'sTools 仍在运行',
-        content: '程序已最小化到系统托盘，右键托盘图标可以退出',
-        iconType: 'info'
+        title: "sTools 仍在运行",
+        content: "程序已最小化到系统托盘，右键托盘图标可以退出",
+        iconType: "info",
       });
     }
   });
@@ -297,18 +305,18 @@ const createWindow = () => {
   });
 
   // 窗口关闭事件处理 - 阻止默认关闭行为
-  mainWindow.on('close', (event) => {
+  mainWindow.on("close", (event) => {
     // 如果不是真正退出应用，就隐藏到托盘
     if (!app.isQuitting) {
       event.preventDefault();
       mainWindow.hide();
-      
+
       // 显示托盘通知（Windows）
-      if (appTray && process.platform === 'win32') {
+      if (appTray && process.platform === "win32") {
         appTray.displayBalloon({
-          title: 'sTools 仍在运行',
-          content: '程序已最小化到系统托盘，右键托盘图标可以退出',
-          iconType: 'info'
+          title: "sTools 仍在运行",
+          content: "程序已最小化到系统托盘，右键托盘图标可以退出",
+          iconType: "info",
         });
       }
     }
@@ -326,12 +334,12 @@ const createWindow = () => {
 };
 
 // 设置应用退出标志
-app.on('before-quit', (event) => {
+app.on("before-quit", (event) => {
   // 如果已经有退出标志，允许退出
   if (app.isQuitting) {
     return;
   }
-  
+
   // 否则阻止退出，改为隐藏到托盘
   event.preventDefault();
   if (mainWindow) {
@@ -363,6 +371,6 @@ app.on("activate", () => {
 });
 
 // 应用退出前清理
-app.on('will-quit', () => {
+app.on("will-quit", () => {
   stopClipboardMonitoring();
 });
