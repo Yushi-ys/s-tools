@@ -10,9 +10,18 @@ class DatabaseService {
 
   initialize() {
     try {
-      // 使用 Electron 的用户数据目录
-      const userDataPath = app.getPath("userData");
-      const dbPath = path.join(userDataPath, "stools-db", "app.db");
+      let dbPath;
+      console.log("当前应用的环境", process.env.NODE_ENV);
+
+      if (process.env.NODE_ENV === "dev") {
+        const projectRoot = process.cwd(); // 当前项目根目录
+        const projectParentDir = path.dirname(projectRoot); // 项目父级目录
+        dbPath = path.join(projectParentDir, "stools-db-dev", "app.db");
+      } else {
+        // 生产环境：放在应用同级目录的 stools-db 文件夹中
+        const appDir = path.dirname(app.getPath("exe"));
+        dbPath = path.join(appDir, "stools-db-prod", "app.db");
+      }
 
       // 确保目录存在
       const dbDir = path.dirname(dbPath);
