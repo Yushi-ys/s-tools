@@ -347,6 +347,9 @@ app.on("before-quit", (event) => {
   }
 });
 
+app.setPath("userData", path.join(app.getPath("appData"), "sTools"));
+app.setPath("sessionData", path.join(app.getPath("userData"), "Session Data"));
+
 app.whenReady().then(() => {
   createWindow();
 });
