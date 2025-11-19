@@ -28,8 +28,7 @@
       "dist/**/*",
       "main.js",
       "preload.js",
-      "src/db/**/*",
-      "node_modules/**/*"
+      "src/db/**/*"
     ],
     "win": {
       "icon": "public/icon.ico",
@@ -48,7 +47,13 @@
         "from": "public/icon.ico",
         "to": "public/icon.ico"
       }
-    ]
+    ],
+    "asar": true,
+    "compression": "normal",
+    "npmRebuild": false,
+    "electronDownload": {
+      "cache": "./.cache/electron"
+    }
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",

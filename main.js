@@ -18,13 +18,15 @@ const isDev = process.env.NODE_ENV === "dev";
 let clipboardMonitoringInterval = null;
 let mainWindow = null;
 let appTray = null;
+// 唤醒app的来源 'taskbar' 或 'tray'
+let lastWakeUpSource = null;
 
 // 注册全局快捷键
 const registerGlobalShortcuts = () => {
   try {
     // 注册 Alt + 1 快捷键
     globalShortcut.register("Alt+1", () => {
-      wakeUpApp();
+      toggleAppVisibility();
     });
   } catch (error) {
     console.error("注册全局快捷键失败:", error);
@@ -83,6 +85,7 @@ const createTray = () => {
     appTray.setContextMenu(contextMenu);
 
     appTray.on("click", () => {
+      setWakeUpSource("tray");
       if (mainWindow) {
         if (mainWindow.isVisible()) {
           mainWindow.hide();
@@ -155,7 +158,7 @@ const closeAppWithDataSave = () => {
   }
 };
 
-const startClipboardMonitoring = (mainWindow) => {
+const startClipboardMonitoring = () => {
   if (clipboardMonitoringInterval) {
     return;
   }
@@ -213,17 +216,45 @@ const stopClipboardMonitoring = () => {
   }
 };
 
-const wakeUpApp = () => {
+const setWakeUpSource = (source) => {
+  lastWakeUpSource = source;
+};
+
+const showApp = () => {
   if (mainWindow) {
     if (mainWindow.isMinimized()) {
+      // restore() 就是让最小化的窗口"站起来"，回到它原来的大小和位置，然后再显示出来
       mainWindow.restore();
     }
-
     mainWindow.show();
     mainWindow.focus();
-  } else {
-    // 如果窗口不存在，重新创建
+  }
+};
+
+const hideApp = () => {
+  if (mainWindow) {
+    if (lastWakeUpSource === "tray") {
+      // 从托盘唤醒的，隐藏到托盘
+      mainWindow.hide();
+    } else {
+      // 从任务栏唤醒的，最小化到任务栏
+      mainWindow.minimize();
+    }
+  }
+};
+
+const toggleAppVisibility = () => {
+  if (!mainWindow) {
     createWindow();
+    return;
+  }
+
+  if (!mainWindow.isVisible() || mainWindow.isMinimized()) {
+    // 如果窗口不可见 或者 最小化，则显示
+    showApp();
+  } else {
+    // 否则隐藏
+    hideApp();
   }
 };
 
@@ -263,6 +294,7 @@ const createWindow = () => {
 
   // 窗口控制
   ipcMain.on("window-minimize", () => {
+    setWakeUpSource("taskbar");
     mainWindow.minimize();
   });
 
@@ -277,6 +309,7 @@ const createWindow = () => {
 
   ipcMain.on("window-close", () => {
     console.log("点击关闭按钮，隐藏到托盘");
+    setWakeUpSource("tray");
     // 隐藏窗口而不是关闭
     mainWindow.hide();
 
@@ -307,7 +340,7 @@ const createWindow = () => {
 
   // 剪贴板监控
   ipcMain.on("start-clipboard-monitoring", () => {
-    startClipboardMonitoring(mainWindow);
+    startClipboardMonitoring();
   });
 
   ipcMain.on("stop-clipboard-monitoring", () => {
@@ -357,6 +390,15 @@ const createWindow = () => {
     }
     mainWindow = null;
   });
+
+  // 窗口显示时判断唤醒来源
+  mainWindow.on("show", () => {
+    if (lastWakeUpSource === null) {
+      // 首次启动，默认设置为任务栏
+      setWakeUpSource("taskbar");
+    }
+    console.log(`窗口显示，最后唤醒来源: ${lastWakeUpSource}`);
+  });
 };
 
 // 设置应用退出标志
@@ -376,15 +418,6 @@ app.on("before-quit", (event) => {
 app.whenReady().then(() => {
   createWindow();
   registerGlobalShortcuts();
-});
-
-// 监听窗口关闭 - 不自动退出，让托盘保持应用运行
-app.on("window-all-closed", () => {
-  stopClipboardMonitoring();
-  // 注释掉默认的退出逻辑，让托盘保持应用运行
-  // if (process.platform !== "darwin") {
-  //   app.quit();
-  // }
 });
 
 // 监听窗口唤醒 (macOS)
