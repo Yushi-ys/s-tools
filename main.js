@@ -6,6 +6,7 @@ const {
   Tray,
   Menu,
   nativeImage,
+  globalShortcut,
 } = require("electron");
 const path = require("path");
 
@@ -17,6 +18,18 @@ const isDev = process.env.NODE_ENV === "dev";
 let clipboardMonitoringInterval = null;
 let mainWindow = null;
 let appTray = null;
+
+// 注册全局快捷键
+const registerGlobalShortcuts = () => {
+  try {
+    // 注册 Alt + 1 快捷键
+    globalShortcut.register("Alt+1", () => {
+      wakeUpApp();
+    });
+  } catch (error) {
+    console.error("注册全局快捷键失败:", error);
+  }
+};
 
 // 创建托盘图标
 const createTray = () => {
@@ -200,6 +213,20 @@ const stopClipboardMonitoring = () => {
   }
 };
 
+const wakeUpApp = () => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    }
+
+    mainWindow.show();
+    mainWindow.focus();
+  } else {
+    // 如果窗口不存在，重新创建
+    createWindow();
+  }
+};
+
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -348,6 +375,7 @@ app.on("before-quit", (event) => {
 
 app.whenReady().then(() => {
   createWindow();
+  registerGlobalShortcuts();
 });
 
 // 监听窗口关闭 - 不自动退出，让托盘保持应用运行
@@ -372,4 +400,5 @@ app.on("activate", () => {
 // 应用退出前清理
 app.on("will-quit", () => {
   stopClipboardMonitoring();
+  globalShortcut.unregisterAll();
 });
