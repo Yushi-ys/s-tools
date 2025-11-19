@@ -211,7 +211,6 @@ const createWindow = () => {
       nodeIntegration: false,
       contextIsolation: true,
       webviewTag: true,
-      partition: "persist:main", // 使用持久化分区
     },
     frame: false,
     // 可选：设置任务栏图标
@@ -346,9 +345,6 @@ app.on("before-quit", (event) => {
     mainWindow.hide();
   }
 });
-
-app.setPath("userData", path.join(app.getPath("appData"), "sTools"));
-app.setPath("sessionData", path.join(app.getPath("userData"), "Session Data"));
 
 app.whenReady().then(() => {
   createWindow();
