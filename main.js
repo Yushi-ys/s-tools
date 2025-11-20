@@ -15,6 +15,8 @@ const databaseService = require("./src/db/db.js");
 
 const isDev = process.env.NODE_ENV === "dev";
 
+const isMac = process.platform === "darwin"
+
 // 剪贴板监控相关变量
 let clipboardMonitoringInterval = null;
 let mainWindow = null;
@@ -48,12 +50,8 @@ const createTray = () => {
 
     console.log("托盘图标路径:", trayIconPath);
 
-    let trayIcon;
-
-    trayIcon = nativeImage.createFromPath(trayIconPath);
-
+    let trayIcon = nativeImage.createFromPath(trayIconPath);
     appTray = new Tray(trayIcon.resize({ width: 16, height: 16 }));
-
     appTray.setToolTip("sTools");
 
     const contextMenu = Menu.buildFromTemplate([
@@ -75,10 +73,16 @@ const createTray = () => {
       },
     ]);
 
-    appTray.setContextMenu(contextMenu);
+    if (!isMac) {
+      // mac系统，鼠标左键点击托盘图标，会同时触发左击事件和右击事件
+      // 所以先让windows执行绑定菜单
+      // Mac上 左键点击：触发 click 事件 + 自动显示通过 setContextMenu 设置的菜单
+      appTray.setContextMenu(contextMenu);
+    }
 
     appTray.on("click", () => {
       setWakeUpSource("tray");
+
       if (mainWindow) {
         if (mainWindow.isVisible()) {
           mainWindow.hide();
@@ -89,12 +93,12 @@ const createTray = () => {
       }
     });
 
-    appTray.on("double-click", () => {
-      if (mainWindow) {
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    });
+    // 为 macOS 单独添加右键菜单显示
+    if (isMac) {
+      appTray.on('right-click', () => {
+        appTray.popUpContextMenu(contextMenu);
+      });
+    }
   } catch (error) {
     console.error("创建托盘失败:", error);
   }
