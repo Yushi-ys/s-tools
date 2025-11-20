@@ -56,6 +56,7 @@ const RenderItem = ({
       case "text":
         return (
           <Paragraph
+    
             ellipsis={{
               rows: 4,
               expandable: "collapsible",

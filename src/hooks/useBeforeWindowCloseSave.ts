@@ -5,7 +5,7 @@ import useStore from "@/store/store";
 /**
  * 监听退出程序之前事件，保存本地store的一些数据进入本地数据库
  */
-export const useBeforeWindowClose = () => {
+export const useBeforeWindowCloseSave = () => {
     const { on, invoke, db, send } = useElectron();
     const {
         setCloseWindowLoading,

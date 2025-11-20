@@ -4,7 +4,7 @@ import Layout from "@/layout";
 import { useDevTools } from "@/hooks/useDevTools";
 import { useElectronClipboard } from "@/hooks/useElectronClipboard";
 import { useGetAllSqlData } from "@/hooks/useGetAllSqlData";
-import { useBeforeWindowClose } from "@/hooks/useBeforeWindowClose";
+import { useBeforeWindowCloseSave } from "@/hooks/useBeforeWindowCloseSave";
 import useStore from "@/store/store";
 import { ConfigProvider, Spin } from "antd";
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -20,7 +20,7 @@ function App() {
 
   useGetAllSqlData();
 
-  useBeforeWindowClose();
+  useBeforeWindowCloseSave();
 
   /**
    * 监听复制事件

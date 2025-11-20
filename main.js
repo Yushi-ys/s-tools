@@ -9,6 +9,7 @@ const {
   globalShortcut,
 } = require("electron");
 const path = require("path");
+const fs = require("fs");
 
 const databaseService = require("./src/db/db.js");
 
@@ -39,25 +40,16 @@ const createTray = () => {
     let trayIconPath;
 
     if (isDev) {
-      trayIconPath = path.join(process.cwd(), "public", "icon.jpg");
+      trayIconPath = path.join(__dirname, "public", "icon.jpg");
     } else {
       trayIconPath = path.join(process.resourcesPath, "public", "icon.jpg");
-      if (!require("fs").existsSync(trayIconPath)) {
-        trayIconPath = path.join(__dirname, "public", "icon.jpg");
-      }
     }
 
     console.log("托盘图标路径:", trayIconPath);
 
     let trayIcon;
-    if (require("fs").existsSync(trayIconPath)) {
-      trayIcon = nativeImage.createFromPath(trayIconPath);
-    } else {
-      console.log("未找到图标文件，使用默认图标");
-      trayIcon = nativeImage.createFromDataURL(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-      );
-    }
+
+    trayIcon = nativeImage.createFromPath(trayIconPath);
 
     appTray = new Tray(trayIcon.resize({ width: 16, height: 16 }));
 
@@ -262,19 +254,16 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 800,
+    resizable: false,
     webPreferences: {
-      preload: isDev
-        ? path.join(process.cwd(), "preload.js")
-        : path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
       webviewTag: true,
     },
     frame: false,
     // 可选：设置任务栏图标
-    icon: isDev
-      ? path.join(process.cwd(), "public", "icon.jpg")
-      : path.join(__dirname, "public", "icon.jpg"),
+    icon: path.join(__dirname, "public", "icon.jpg"),
   });
 
   databaseService.initialize();
