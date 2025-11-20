@@ -26,7 +26,8 @@ let lastWakeUpSource = null;
 const registerGlobalShortcuts = () => {
   try {
     // 注册 Alt + 1 快捷键
-    globalShortcut.register("Alt+1", () => {
+    const shortcutkey = process.platform === "darwin" ? "Command+1" : "Alt+1";
+    globalShortcut.register(shortcutkey, () => {
       toggleAppVisibility();
     });
   } catch (error) {
