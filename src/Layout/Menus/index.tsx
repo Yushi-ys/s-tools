@@ -5,6 +5,7 @@ import {
   CopyOutlined,
   DiffOutlined,
   NumberOutlined,
+  SettingOutlined,
   TranslationOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "@/hooks/useRouter";
@@ -55,6 +56,14 @@ const Menus: React.FC = () => {
         icon: <BugOutlined />,
         onClick: () => {
           push("/scrape");
+        },
+      },
+      {
+        key: "setting",
+        label: "设置",
+        icon: <SettingOutlined />,
+        onClick: () => {
+          push("/setting");
         },
       },
     ];

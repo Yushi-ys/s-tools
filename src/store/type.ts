@@ -19,6 +19,13 @@ export interface ITranslationData {
   originalLanguage: string;
   translatedlLanguage: string;
 }
+
+export type TSettingDisplay = "full_screen" | "window";
+export interface ISettingData {
+  display: TSettingDisplay;
+  autoStart: boolean;
+  shortKey: string;
+}
 export interface StoreState {
   closeWindowLoading: boolean;
   setCloseWindowLoading: (closeWindowLoading: boolean) => void;
@@ -36,4 +43,6 @@ export interface StoreState {
   setDiffData: (newVal: IDiffData) => void;
   translationData: ITranslationData;
   setTranslationData: (newVal: ITranslationData) => void;
+  settings: ISettingData;
+  setSettings: (newVal: ISettingData) => void;
 }

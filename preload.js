@@ -2,6 +2,8 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 const electronAPI = {
+  platform: process.platform,
+
   // 窗口控制
   minimizeWindow: () => ipcRenderer.send("window-minimize"),
   maximizeWindow: () => ipcRenderer.send("window-maximize"),
@@ -41,6 +43,13 @@ const electronAPI = {
     getClipboardCount: () =>
       ipcRenderer.invoke("database-clipBoardData-get-count"),
   },
+
+  // 禁用全局快捷键
+  disableGlobalShortcuts: () => ipcRenderer.invoke("disable-global-shortcuts"),
+
+  // 启用全局快捷键
+  enableGlobalShortcuts: (shortcut) =>
+    ipcRenderer.invoke("enable-global-shortcuts", shortcut),
 };
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

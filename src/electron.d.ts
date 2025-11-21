@@ -1,6 +1,6 @@
 // electron.d.ts 或 global.d.ts
 export interface ClipboardData {
-  type: 'text' | 'image';
+  type: "text" | "image";
   text?: string;
   image?: string;
   width?: number;
@@ -14,8 +14,22 @@ export interface DatabaseResult {
   changes?: number;
   error?: string;
 }
+type Platform =
+  | "aix"
+  | "android"
+  | "darwin"
+  | "freebsd"
+  | "haiku"
+  | "linux"
+  | "openbsd"
+  | "sunos"
+  | "win32"
+  | "cygwin"
+  | "netbsd";
 
 export interface IElectronAPI {
+  platform: Platform;
+
   // 窗口控制
   minimizeWindow: () => void;
   maximizeWindow: () => void;
@@ -42,6 +56,11 @@ export interface IElectronAPI {
     addClipboardData: (data: ClipboardData) => Promise<DatabaseResult>;
     getClipboardCount: () => Promise<number>;
   };
+
+  // 禁用全局快捷键
+  disableGlobalShortcuts: () => Promise<void>;
+  // 启用全局快捷键
+  enableGlobalShortcuts: (data: string) => Promise<void>;
 }
 
 declare global {

@@ -15,7 +15,7 @@ const databaseService = require("./src/db/db.js");
 
 const isDev = process.env.NODE_ENV === "dev";
 
-const isMac = process.platform === "darwin"
+const isMac = process.platform === "darwin";
 
 // 剪贴板监控相关变量
 let clipboardMonitoringInterval = null;
@@ -24,14 +24,21 @@ let appTray = null;
 // 唤醒app的来源 'taskbar' 或 'tray'
 let lastWakeUpSource = null;
 
+let isShortcutsEnabled = true;
+const currentShortcut = process.platform === "darwin" ? "Command+1" : "Alt+1";
 // 注册全局快捷键
-const registerGlobalShortcuts = () => {
+const registerGlobalShortcuts = (key = currentShortcut) => {
   try {
-    // 注册 Alt + 1 快捷键
-    const shortcutkey = process.platform === "darwin" ? "Command+1" : "Alt+1";
-    globalShortcut.register(shortcutkey, () => {
-      toggleAppVisibility();
-    });
+    // 先取消所有已注册的快捷键
+    globalShortcut.unregisterAll();
+
+    if (isShortcutsEnabled && key) {
+      // 注册新的快捷键
+      globalShortcut.register(key, () => {
+        toggleAppVisibility();
+      });
+      console.log(`全局快捷键已注册: ${key}`);
+    }
   } catch (error) {
     console.error("注册全局快捷键失败:", error);
   }
@@ -74,10 +81,16 @@ const createTray = () => {
     ]);
 
     if (!isMac) {
-      // mac系统，鼠标左键点击托盘图标，会同时触发左击事件和右击事件
       // 所以先让windows执行绑定菜单
       // Mac上 左键点击：触发 click 事件 + 自动显示通过 setContextMenu 设置的菜单
       appTray.setContextMenu(contextMenu);
+    }
+
+    // 为 macOS 单独添加右键菜单显示
+    if (isMac) {
+      appTray.on("right-click", () => {
+        appTray.popUpContextMenu(contextMenu);
+      });
     }
 
     appTray.on("click", () => {
@@ -92,13 +105,6 @@ const createTray = () => {
         }
       }
     });
-
-    // 为 macOS 单独添加右键菜单显示
-    if (isMac) {
-      appTray.on('right-click', () => {
-        appTray.popUpContextMenu(contextMenu);
-      });
-    }
   } catch (error) {
     console.error("创建托盘失败:", error);
   }
@@ -355,6 +361,20 @@ const createWindow = () => {
 
   ipcMain.handle("database-clipBoardData-get-count", () => {
     return databaseService.getClipboardCount();
+  });
+
+  // 禁用全局快捷键
+  ipcMain.handle("disable-global-shortcuts", () => {
+    isShortcutsEnabled = false;
+    console.log("全局快捷键已禁用");
+    globalShortcut.unregisterAll();
+  });
+
+  // 启用全局快捷键
+  ipcMain.handle("enable-global-shortcuts", (event, key) => {
+    isShortcutsEnabled = true;
+    console.log("全局快捷键已启用", key);
+    registerGlobalShortcuts(key);
   });
 
   // 窗口关闭事件处理 - 阻止默认关闭行为

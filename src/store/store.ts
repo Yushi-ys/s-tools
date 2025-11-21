@@ -1,12 +1,20 @@
 import { create } from "zustand";
 import type {
   IDiffData,
+  ISettingData,
   ITranslationData,
   IUuidData,
   StoreState,
 } from "./type";
 import { THEMESTYLE } from "@/types/constants";
 import type { IClipboardItem } from "@/hooks/useAdvancedClipboard";
+
+const getDefaultShortKey = () => {
+  if (typeof window !== "undefined" && window.electronAPI.platform) {
+    return window.electronAPI.platform === "darwin" ? "Command+1" : "Alt+1";
+  }
+  return "Alt+1";
+};
 
 const useStore = create<StoreState>((set) => ({
   // 关闭项目的时候的loading，存数据到本地的sql中使用
@@ -54,6 +62,14 @@ const useStore = create<StoreState>((set) => ({
   },
   setTranslationData: (newVal: ITranslationData) =>
     set(() => ({ translationData: newVal })),
+
+  // 设置相关
+  settings: {
+    display: "window",
+    autoStart: false,
+    shortKey: getDefaultShortKey(),
+  },
+  setSettings: (newVal: ISettingData) => set(() => ({ settings: newVal })),
 }));
 
 export default useStore;
