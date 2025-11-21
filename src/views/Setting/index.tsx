@@ -1,9 +1,9 @@
 import { Form, Radio } from "antd";
 import useStore from "@/store/store";
-
-import styles from "./index.module.less";
 import type { ISettingData, TSettingDisplay } from "@/store/type";
 import ShortKey from "./ShortKey";
+
+import styles from "./index.module.less";
 
 const SettingPage: React.FC = () => {
   const [form] = Form.useForm();

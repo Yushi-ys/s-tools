@@ -29,7 +29,6 @@ type Platform =
 
 export interface IElectronAPI {
   platform: Platform;
-
   // 窗口控制
   minimizeWindow: () => void;
   maximizeWindow: () => void;

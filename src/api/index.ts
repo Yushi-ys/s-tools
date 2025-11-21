@@ -13,6 +13,11 @@ const getSign = (appid: string, q: string, salt: string, appkey: string) => {
   return CryptoJS.MD5(sign_str).toString();
 };
 
+/**
+ * 百度翻译
+ * @param props
+ * @returns
+ */
 export const baiduTranslate = async (props: IBaiduTranslateProps) => {
   const appid = "20251104002490229";
   const salt = generateRandomString(5, "only_num"); // 函数生成的随机码, 可为字母或数字的字符串
@@ -29,6 +34,106 @@ export const baiduTranslate = async (props: IBaiduTranslateProps) => {
     salt,
     sign,
   });
-  
+
   return res;
+};
+
+// 类型定义
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+interface StreamDeepSeekOptions {
+  systemMessage?: string;
+  conversationHistory?: ChatMessage[]; // 新增：对话历史
+  onChunk?: (chunk: string, fullResponse: string) => void;
+  onComplete?: (fullResponse: string) => void;
+  onError?: (error: Error) => void;
+}
+
+/**
+ * DeepSeek 流式聊天（支持上下文）
+ * @param {string} userMessage - 用户消息
+ * @param {StreamDeepSeekOptions} options - 配置选项
+ */
+export const streamDeepSeek = async (
+  userMessage: string,
+  options: StreamDeepSeekOptions = {}
+): Promise<string> => {
+  const {
+    systemMessage = "你是一个有用的助手。",
+    conversationHistory = [], // 对话历史，默认为空数组
+    onChunk,
+    onComplete,
+    onError
+  } = options;
+
+  if (!userMessage?.trim()) {
+    const error = new Error("请输入有效的用户消息");
+    onError?.(error);
+    throw error;
+  }
+
+  try {
+    // 构建完整的消息数组：系统消息 + 对话历史 + 当前用户消息
+    const messages: ChatMessage[] = [
+      { role: "system", content: systemMessage },
+      ...conversationHistory, // 包含之前的所有对话
+      { role: "user", content: userMessage.trim() }
+    ];
+
+    console.log('发送请求，消息数量:', messages.length);
+    console.log('对话历史长度:', conversationHistory.length);
+
+    const streamResponse = await fetch(
+      "http://localhost:3002/api/chat/stream",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+        }),
+      }
+    );
+
+    if (!streamResponse.ok) {
+      const errorText = await streamResponse.text();
+      throw new Error(
+        `HTTP错误! 状态: ${streamResponse.status}, 详情: ${errorText}`
+      );
+    }
+
+    if (!streamResponse.body) {
+      throw new Error("响应体为空");
+    }
+
+    const reader = streamResponse.body.getReader();
+    const decoder = new TextDecoder();
+    let fullResponse = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      fullResponse += chunk;
+
+      if (onChunk) {
+        onChunk(chunk, fullResponse);
+      }
+    }
+
+    if (onComplete) {
+      onComplete(fullResponse);
+    }
+
+    return fullResponse;
+  } catch (error) {
+    console.error("请求失败:", error);
+    onError?.(error instanceof Error ? error : new Error(String(error)));
+    throw error;
+  }
 };

@@ -1,6 +1,6 @@
+import { useEffect, useMemo, useState } from "react";
 import type { ISettingData, TSettingDisplay } from "@/store/type";
 import { Input } from "antd";
-import { useEffect, useMemo, useState } from "react";
 
 interface IProps {
   settings: ISettingData;
