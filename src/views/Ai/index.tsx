@@ -94,7 +94,7 @@ const AiPage = () => {
       await streamDeepSeek(content, {
         systemMessage: "你是一个有用的AI助手，请用友好、专业的语气回答用户的问题。回答要简洁明了，避免冗长。",
         conversationHistory, // 传入对话历史
-        onChunk: (chunk: string, fullResponse: string) => {
+        onChunk: (_: string, fullResponse: string) => {
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === aiMessageId ? { ...msg, content: fullResponse } : msg

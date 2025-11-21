@@ -1,6 +1,6 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
-const DeepSeekClient = require("./server/deepseek");
 const { json } = express;
 
 function startServer(port = 3002) {
@@ -42,7 +42,8 @@ function startServer(port = 3002) {
 
       res.setHeader("Content-Type", "text/plain; charset=utf-8");
       res.setHeader("Transfer-Encoding", "chunked");
-
+      const deepseekPath = path.join(__dirname, "server", "deepseek.js");
+      const DeepSeekClient = require(deepseekPath);
       const deepseek = new DeepSeekClient(DEEPSEEK_API_KEY);
 
       await deepseek.chatStream(messages, model, (chunk, fullContent) => {
@@ -61,8 +62,8 @@ function startServer(port = 3002) {
       console.log(`Proxy server running on http://localhost:${port}`);
       resolve(server);
     });
-    
-    server.on('error', reject);
+
+    server.on("error", reject);
   });
 }
 

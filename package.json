@@ -29,7 +29,7 @@
       "main.js",
       "preload.js",
       "electron-server.js",
-      "deepseek.js",
+      "server/deepseek.js",
       "src/db/**/*"
     ],
     "win": {
