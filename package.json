@@ -16,8 +16,7 @@
     "pack": "npm run build && cross-env NODE_ENV=prod electron-builder",
     "dist": "npm run build && cross-env NODE_ENV=prod electron-builder --publish=never",
     "dist:mac-arm64": "npm run build && cross-env NODE_ENV=prod electron-builder --mac --arm64",
-    "start:node": "echo \"🚀 启动后端开发服务器...\" && cd ./server && node proxy-server.js",
-    "start:electron": "echo \"🎯 启动前端服务...\" && npm run dev"
+    "start": "echo \"🎯 启动前端服务...\" && npm run dev"
   },
   "build": {
     "appId": "com.19990703.sTools",
@@ -29,6 +28,8 @@
       "dist/**/*",
       "main.js",
       "preload.js",
+      "electron-server.js",
+      "deepseek.js",
       "src/db/**/*"
     ],
     "win": {

@@ -12,10 +12,13 @@ const path = require("path");
 const fs = require("fs");
 
 const databaseService = require("./src/db/db.js");
+const { startServer } = require("./electron-server.js");
 
 const isDev = process.env.NODE_ENV === "dev";
 
 const isMac = process.platform === "darwin";
+
+let server = null;
 
 // 剪贴板监控相关变量
 let clipboardMonitoringInterval = null;
@@ -110,6 +113,11 @@ const createTray = () => {
   }
 };
 
+const appQuit = () => {
+  server.close();
+  app.quit();
+};
+
 const closeAppWithDataSave = () => {
   // 设置退出标志
   app.isQuitting = true;
@@ -137,7 +145,7 @@ const closeAppWithDataSave = () => {
       }
 
       // 退出应用
-      app.quit();
+      appQuit();
     };
 
     ipcMain.once("save-data-complete", saveCompleteHandler);
@@ -149,7 +157,7 @@ const closeAppWithDataSave = () => {
         appTray.destroy();
         appTray = null;
       }
-      app.quit();
+      appQuit();
     }, 5000);
 
     // 清理超时定时器
@@ -157,7 +165,7 @@ const closeAppWithDataSave = () => {
       clearTimeout(timeoutId);
     });
   } else {
-    app.quit();
+    appQuit();
   }
 };
 
@@ -421,7 +429,7 @@ app.on("before-quit", (event) => {
   if (app.isQuitting) {
     return;
   }
-
+  server.close();
   // 否则阻止退出，改为隐藏到托盘
   event.preventDefault();
   if (mainWindow) {
@@ -429,7 +437,8 @@ app.on("before-quit", (event) => {
   }
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  server = await startServer(3002);
   createWindow();
   registerGlobalShortcuts();
 });
