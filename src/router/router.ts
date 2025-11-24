@@ -3,6 +3,7 @@ import { createHashRouter } from "react-router-dom";
 import App from "@/App";
 
 // 页面组件懒加载
+const Home = lazy(() => import("@/views/Home"));
 const Clipboard = lazy(() => import("@/views/Clipboard"));
 const Uuid = lazy(() => import("@/views/Uuid"));
 const Diff = lazy(() => import("@/views/Diff"));
@@ -17,7 +18,11 @@ export const router = createHashRouter([
     children: [
       {
         index: true, // 设置为默认路由
-        Component: Clipboard,
+        Component: Home,
+      },
+      {
+        path: "home",
+        Component: Home,
       },
       {
         path: "clipboard",

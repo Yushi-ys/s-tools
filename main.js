@@ -25,7 +25,7 @@ let server = null;
 let clipboardMonitoringInterval = null;
 let mainWindow = null;
 let appTray = null;
-// 唤醒app的来源 'taskbar' 或 'tray'
+// 唤醒app的来源 'taskbar' 或 'tray' 任务栏还是托盘
 let lastWakeUpSource = null;
 
 let isShortcutsEnabled = true;
@@ -370,6 +370,30 @@ const createWindow = () => {
 
   ipcMain.handle("database-clipBoardData-get-count", () => {
     return databaseService.getClipboardCount();
+  });
+
+  // 系统设置相关的 IPC 处理器
+  ipcMain.handle("database-systemSetting-get", () => {
+    return databaseService.getSystemSetting();
+  });
+
+  ipcMain.handle("database-systemSetting-update", (event, data) => {
+    return databaseService.updateSystemSetting(data);
+  });
+
+  ipcMain.handle("database-systemSetting-update-field", (event, updates) => {
+    return databaseService.updateSystemSettingField(updates);
+  });
+
+  ipcMain.handle(
+    "database-systemSetting-initialize",
+    (event, defaultConfig) => {
+      return databaseService.initializeSystemSetting(defaultConfig);
+    }
+  );
+
+  ipcMain.handle("database-systemSetting-delete", () => {
+    return databaseService.deleteSystemSetting();
   });
 
   // 禁用全局快捷键

@@ -51,9 +51,21 @@ export interface IElectronAPI {
 
   // 数据库操作
   db: {
+    // 剪贴板数据
     getAllClipboardData: (limit?: number) => Promise<ClipboardData[]>;
     addClipboardData: (data: ClipboardData) => Promise<DatabaseResult>;
     getClipboardCount: () => Promise<number>;
+
+    // 系统设置
+    getSystemSetting: () => Promise<SystemSettingRecord | null>;
+    updateSystemSetting: (data: SystemSettings) => Promise<DatabaseResult>;
+    updateSystemSettingField: (
+      updates: Partial<SystemSettings>
+    ) => Promise<DatabaseResult>;
+    initializeSystemSetting: (
+      defaultConfig?: Partial<SystemSettings>
+    ) => Promise<DatabaseResult>;
+    deleteSystemSetting: () => Promise<DatabaseResult>;
   };
 
   settings: {

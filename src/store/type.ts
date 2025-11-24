@@ -43,4 +43,6 @@ export interface StoreState {
   setTranslationData: (newVal: ITranslationData) => void;
   settings: ISettingData;
   setSettings: (newVal: ISettingData) => void;
+  settingsLoading: boolean;
+  setSettingsLoading: (newVal: boolean) => void;
 }

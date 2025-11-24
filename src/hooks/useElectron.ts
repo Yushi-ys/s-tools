@@ -1,50 +1,10 @@
 import { useMemoizedFn } from "ahooks";
 import { useEffect, useState, useRef } from "react";
 
-interface IUseElectronReturn {
-  isElectron: boolean;
-  // 窗口控制
-  minimizeWindow: () => void;
-  maximizeWindow: () => void;
-  closeWindow: () => void;
-
-  // 剪贴板监控
-  startClipboardMonitoring: () => void;
-  stopClipboardMonitoring: () => void;
-  getClipboardText: () => Promise<string>;
-
-  // 剪贴板事件
-  onClipboardChange: (
-    callback: (data: any) => void
-  ) => (() => void) | undefined;
-
-  // 数据库操作
-  db: {
-    getAllClipboardData: (limit?: number) => Promise<
-      {
-        update_at: string;
-        id: string;
-        json_data: any;
-      }[]
-    >;
-    addClipboardData: (data: any) => Promise<any>;
-    getClipboardCount: () => Promise<number>;
-  };
-
-  // 通用通信方法
-  send: (channel: string, data?: any) => void;
-  invoke: (channel: string, data?: any) => Promise<any>;
-  on: (
-    channel: string,
-    callback: (data: any) => void
-  ) => (() => void) | undefined;
-  removeAllListeners: (channel: string) => void;
-}
-
 /**
  * 封装 Electron API 的 Hook
  */
-export const useElectron = (): IUseElectronReturn => {
+export const useElectron = () => {
   const [isElectron, setIsElectron] = useState<boolean>(false);
   const listenerRefs = useRef<Map<string, Function>>(new Map());
 
@@ -98,6 +58,7 @@ export const useElectron = (): IUseElectronReturn => {
 
   // 数据库操作
   const db = {
+    // 剪贴板数据相关
     getAllClipboardData: useMemoizedFn((limit?: number): Promise<any[]> => {
       if (window.electronAPI?.db?.getAllClipboardData) {
         return window.electronAPI.db.getAllClipboardData(limit);
@@ -117,6 +78,47 @@ export const useElectron = (): IUseElectronReturn => {
         return window.electronAPI.db.getClipboardCount();
       }
       return Promise.resolve(0);
+    }),
+
+    // 系统设置相关
+    getSystemSetting: useMemoizedFn((): Promise<any> => {
+      if (window.electronAPI?.db?.getSystemSetting) {
+        return window.electronAPI.db.getSystemSetting();
+      }
+      return Promise.resolve(null);
+    }),
+
+    updateSystemSetting: useMemoizedFn((data: any): Promise<any> => {
+      if (window.electronAPI?.db?.updateSystemSetting) {
+        return window.electronAPI.db.updateSystemSetting(data);
+      }
+      return Promise.resolve({ success: false, error: "Electron API 不可用" });
+    }),
+
+    updateSystemSettingField: useMemoizedFn((updates: any): Promise<any> => {
+      if (window.electronAPI?.db?.updateSystemSettingField) {
+        return window.electronAPI.db.updateSystemSettingField(updates);
+      }
+      return Promise.resolve({ success: false, error: "Electron API 不可用" });
+    }),
+
+    initializeSystemSetting: useMemoizedFn(
+      (defaultConfig?: any): Promise<any> => {
+        if (window.electronAPI?.db?.initializeSystemSetting) {
+          return window.electronAPI.db.initializeSystemSetting(defaultConfig);
+        }
+        return Promise.resolve({
+          success: false,
+          error: "Electron API 不可用",
+        });
+      }
+    ),
+
+    deleteSystemSetting: useMemoizedFn((): Promise<any> => {
+      if (window.electronAPI?.db?.deleteSystemSetting) {
+        return window.electronAPI.db.deleteSystemSetting();
+      }
+      return Promise.resolve({ success: false, error: "Electron API 不可用" });
     }),
   };
 

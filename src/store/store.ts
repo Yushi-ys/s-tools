@@ -69,6 +69,9 @@ const useStore = create<StoreState>((set) => ({
     shortKey: getDefaultShortKey(),
   },
   setSettings: (newVal: ISettingData) => set(() => ({ settings: newVal })),
+  settingsLoading: false,
+  setSettingsLoading: (newVal: boolean) =>
+    set(() => ({ settingsLoading: newVal })),
 }));
 
 export default useStore;

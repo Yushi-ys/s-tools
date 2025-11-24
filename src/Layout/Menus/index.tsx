@@ -4,6 +4,7 @@ import {
   BugOutlined,
   CopyOutlined,
   DiffOutlined,
+  HomeOutlined,
   NumberOutlined,
   SettingOutlined,
   TranslationOutlined,
@@ -14,10 +15,18 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const Menus: React.FC = () => {
   const { push } = useRouter();
-  const [current, setCurrent] = useState("clipboard");
+  const [current, setCurrent] = useState("home");
 
   const items: MenuItem[] = useMemo(() => {
     return [
+      {
+        key: "home",
+        label: "首页",
+        icon: <HomeOutlined />,
+        onClick: () => {
+          push("/home");
+        },
+      },
       {
         key: "clipboard",
         label: "剪切板",

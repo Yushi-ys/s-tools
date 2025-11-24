@@ -35,13 +35,26 @@ const electronAPI = {
   // 移除监听器
   removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
 
+  // 数据库操作
   db: {
+    // 剪贴板数据
     getAllClipboardData: (limit) =>
       ipcRenderer.invoke("database-clipBoardData-get-all", limit),
     addClipboardData: (data) =>
       ipcRenderer.invoke("database-clipBoardData-add", data),
     getClipboardCount: () =>
       ipcRenderer.invoke("database-clipBoardData-get-count"),
+
+    // 系统配置
+    getSystemSetting: () => ipcRenderer.invoke("database-systemSetting-get"),
+    updateSystemSetting: (data) =>
+      ipcRenderer.invoke("database-systemSetting-update", data),
+    updateSystemSettingField: (updates) =>
+      ipcRenderer.invoke("database-systemSetting-update-field", updates),
+    initializeSystemSetting: (defaultConfig) =>
+      ipcRenderer.invoke("database-systemSetting-initialize", defaultConfig),
+    deleteSystemSetting: () =>
+      ipcRenderer.invoke("database-systemSetting-delete"),
   },
 
   settings: {
