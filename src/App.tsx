@@ -7,6 +7,7 @@ import { useElectronClipboard } from "@/hooks/useElectronClipboard";
 import { useGetAllSqlData } from "@/hooks/useGetAllSqlData";
 import { useBeforeWindowCloseSave } from "@/hooks/useBeforeWindowCloseSave";
 import { useAutoStart } from "@/hooks/useAutoStart";
+import { useCalculateTodayEarnings } from "@/hooks/useCalculateTodayEarnings";
 import useStore from "@/store/store";
 import { ConfigProvider, Spin } from "antd";
 import zh_CN from "antd/es/locale/zh_CN";
@@ -25,6 +26,8 @@ function App() {
   useBeforeWindowCloseSave();
 
   useAutoStart();
+
+  useCalculateTodayEarnings();
 
   /**
    * 监听复制事件

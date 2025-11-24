@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type {
   IDiffData,
+  IHomeData,
   ISettingData,
   ITranslationData,
   IUuidData,
@@ -72,6 +73,22 @@ const useStore = create<StoreState>((set) => ({
   settingsLoading: false,
   setSettingsLoading: (newVal: boolean) =>
     set(() => ({ settingsLoading: newVal })),
+
+  // 主页的数据
+  homeData: {
+    monthlySalary: 0,
+    workDaysPerMonth: 0,
+    todayEarnings: 0,
+    // 新增默认值
+    workStartTime: "09:00",
+    workEndTime: "18:00",
+    lunchBreakStart: "12:00",
+    lunchBreakEnd: "13:00",
+  },
+  setHomeData: (newVal: IHomeData | ((prev: IHomeData) => IHomeData)) =>
+    set((state) => ({
+      homeData: typeof newVal === "function" ? newVal(state.homeData) : newVal,
+    })),
 }));
 
 export default useStore;

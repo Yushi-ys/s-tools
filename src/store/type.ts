@@ -24,6 +24,18 @@ export interface ISettingData {
   autoStart: boolean;
   shortKey: string;
 }
+
+// store/type.ts
+export interface IHomeData {
+  monthlySalary: number;
+  workDaysPerMonth: number;
+  todayEarnings: number;
+  // 新增字段
+  workStartTime: string;    // 上班时间，格式 "09:00"
+  workEndTime: string;      // 下班时间，格式 "18:00" 
+  lunchBreakStart: string;  // 午休开始时间，格式 "12:00"
+  lunchBreakEnd: string;    // 午休结束时间，格式 "13:00"
+}
 export interface StoreState {
   closeWindowLoading: boolean;
   setCloseWindowLoading: (closeWindowLoading: boolean) => void;
@@ -45,4 +57,6 @@ export interface StoreState {
   setSettings: (newVal: ISettingData) => void;
   settingsLoading: boolean;
   setSettingsLoading: (newVal: boolean) => void;
+  homeData: IHomeData;
+  setHomeData: (newVal: IHomeData | ((prev: IHomeData) => IHomeData)) => void;
 }
