@@ -63,7 +63,7 @@ export const streamDeepSeek = async (
 ): Promise<string> => {
   const {
     systemMessage = "你是一个有用的助手。",
-    conversationHistory = [], // 对话历史，默认为空数组
+    conversationHistory = [],
     onChunk,
     onComplete,
     onError
@@ -76,16 +76,17 @@ export const streamDeepSeek = async (
   }
 
   try {
-    // 构建完整的消息数组：系统消息 + 对话历史 + 当前用户消息
+    // 构建完整的消息数组
     const messages: ChatMessage[] = [
       { role: "system", content: systemMessage },
-      ...conversationHistory, // 包含之前的所有对话
+      ...conversationHistory,
       { role: "user", content: userMessage.trim() }
     ];
 
     console.log('发送请求，消息数量:', messages.length);
     console.log('对话历史长度:', conversationHistory.length);
 
+    // 在浏览器环境中使用 fetch，因为 axios 不支持 responseType: 'stream'
     const streamResponse = await fetch(
       "http://localhost:3002/api/chat/stream",
       {
@@ -100,10 +101,13 @@ export const streamDeepSeek = async (
     );
 
     if (!streamResponse.ok) {
-      const errorText = await streamResponse.text();
-      throw new Error(
-        `HTTP错误! 状态: ${streamResponse.status}, 详情: ${errorText}`
-      );
+      // 使用 axios 来获取错误响应的详细信息
+      try {
+        const errorText = await streamResponse.text();
+        throw new Error(`HTTP错误! 状态: ${streamResponse.status}, 详情: ${errorText}`);
+      } catch (textError) {
+        throw new Error(`HTTP错误! 状态: ${streamResponse.status}`);
+      }
     }
 
     if (!streamResponse.body) {
@@ -111,29 +115,61 @@ export const streamDeepSeek = async (
     }
 
     const reader = streamResponse.body.getReader();
-    const decoder = new TextDecoder();
+    const decoder = new TextDecoder('utf-8');
     let fullResponse = "";
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      const chunk = decoder.decode(value, { stream: true });
-      fullResponse += chunk;
+        const chunk = decoder.decode(value, { stream: true });
+        
+        // 确保 chunk 不是空字符串
+        if (chunk && chunk.trim()) {
+          fullResponse += chunk;
 
-      if (onChunk) {
-        onChunk(chunk, fullResponse);
+          if (onChunk) {
+            onChunk(chunk, fullResponse);
+          }
+        }
       }
+
+      // 确保所有数据都被解码
+      const finalChunk = decoder.decode();
+      if (finalChunk && finalChunk.trim()) {
+        fullResponse += finalChunk;
+        if (onChunk) {
+          onChunk(finalChunk, fullResponse);
+        }
+      }
+
+      console.log('流式响应完成，总长度:', fullResponse.length);
+      
+      if (onComplete) {
+        onComplete(fullResponse);
+      }
+
+      return fullResponse;
+
+    } finally {
+      // 确保释放 reader
+      reader.releaseLock();
     }
 
-    if (onComplete) {
-      onComplete(fullResponse);
-    }
-
-    return fullResponse;
   } catch (error) {
     console.error("请求失败:", error);
-    onError?.(error instanceof Error ? error : new Error(String(error)));
-    throw error;
+    
+    // 提供更友好的错误信息
+    let errorMessage = "请求失败";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    }
+    
+    const finalError = new Error(errorMessage);
+    onError?.(finalError);
+    throw finalError;
   }
 };

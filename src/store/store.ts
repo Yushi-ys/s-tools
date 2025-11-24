@@ -65,7 +65,6 @@ const useStore = create<StoreState>((set) => ({
 
   // 设置相关
   settings: {
-    display: "window",
     autoStart: false,
     shortKey: getDefaultShortKey(),
   },

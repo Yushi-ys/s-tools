@@ -44,12 +44,24 @@ const electronAPI = {
       ipcRenderer.invoke("database-clipBoardData-get-count"),
   },
 
-  // 禁用全局快捷键
-  disableGlobalShortcuts: () => ipcRenderer.invoke("disable-global-shortcuts"),
-
-  // 启用全局快捷键
-  enableGlobalShortcuts: (shortcut) =>
-    ipcRenderer.invoke("enable-global-shortcuts", shortcut),
+  settings: {
+    autoStart: {
+      // 允许自启动
+      enableAutoStart: () => ipcRenderer.invoke("enable-auto-start"),
+      // 禁止自启动
+      disableAutoStart: () => ipcRenderer.invoke("disable-auto-start"),
+      // 查看自启动状态
+      checkAutoStartStatus: () => ipcRenderer.invoke("check-auto-start-status"),
+    },
+    shortCuts: {
+      // 禁用全局快捷键
+      disableGlobalShortcuts: () =>
+        ipcRenderer.invoke("disable-global-shortcuts"),
+      // 启用全局快捷键
+      enableGlobalShortcuts: (shortcut) =>
+        ipcRenderer.invoke("enable-global-shortcuts", shortcut),
+    },
+  },
 };
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

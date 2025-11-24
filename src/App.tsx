@@ -6,6 +6,7 @@ import { useDevTools } from "@/hooks/useDevTools";
 import { useElectronClipboard } from "@/hooks/useElectronClipboard";
 import { useGetAllSqlData } from "@/hooks/useGetAllSqlData";
 import { useBeforeWindowCloseSave } from "@/hooks/useBeforeWindowCloseSave";
+import { useAutoStart } from "@/hooks/useAutoStart";
 import useStore from "@/store/store";
 import { ConfigProvider, Spin } from "antd";
 import zh_CN from "antd/es/locale/zh_CN";
@@ -22,6 +23,8 @@ function App() {
   useGetAllSqlData();
 
   useBeforeWindowCloseSave();
+
+  useAutoStart();
 
   /**
    * 监听复制事件

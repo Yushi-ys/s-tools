@@ -16,7 +16,7 @@
     "pack": "npm run build && cross-env NODE_ENV=prod electron-builder",
     "dist": "npm run build && cross-env NODE_ENV=prod electron-builder --publish=never",
     "dist:mac-arm64": "npm run build && cross-env NODE_ENV=prod electron-builder --mac --arm64",
-    "start": "echo \"🎯 启动前端服务...\" && npm run dev"
+    "start": "echo \"🎯 启动服务...\" && npm run dev"
   },
   "build": {
     "appId": "com.19990703.sTools",
@@ -30,7 +30,8 @@
       "preload.js",
       "electron-server.js",
       "server/deepseek.js",
-      "src/db/**/*"
+      "src/db/**/*",
+      "src/utils/class.js"
     ],
     "win": {
       "icon": "public/icon.ico",
@@ -76,6 +77,7 @@
     "@ant-design/icons": "^6.1.0",
     "ahooks": "^3.9.6",
     "antd": "^5.27.3",
+    "auto-launch": "^5.0.6",
     "axios": "^1.13.2",
     "better-sqlite3": "^11.10.0",
     "cheerio": "^1.1.2",

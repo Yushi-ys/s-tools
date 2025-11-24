@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ISettingData, TSettingDisplay } from "@/store/type";
+import type { ISettingData } from "@/store/type";
 import { Input } from "antd";
 
 interface IProps {
   settings: ISettingData;
-  onChangeFormState: (
-    key: keyof ISettingData,
-    value: TSettingDisplay | boolean | string
-  ) => void;
+  onChangeFormState: (key: keyof ISettingData, value: boolean | string) => void;
 }
 
 export default function ShortKey({ settings, onChangeFormState }: IProps) {
@@ -25,7 +22,7 @@ export default function ShortKey({ settings, onChangeFormState }: IProps) {
   const startRecording = async () => {
     try {
       // 通知主进程禁用全局快捷键
-      await window.electronAPI.disableGlobalShortcuts();
+      await window.electronAPI.settings.shortCuts.disableGlobalShortcuts();
       setRecording(true);
     } catch (error) {
       console.error("禁用快捷键失败:", error);
@@ -40,9 +37,13 @@ export default function ShortKey({ settings, onChangeFormState }: IProps) {
       if (currentShortcut && currentShortcut.length > 0) {
         onChangeFormState("shortKey", currentShortcut);
         // 通知主进程重新启用全局快捷键
-        await window.electronAPI.enableGlobalShortcuts(currentShortcut);
+        await window.electronAPI.settings.shortCuts.enableGlobalShortcuts(
+          currentShortcut
+        );
       } else {
-        await window.electronAPI.enableGlobalShortcuts(settings.shortKey);
+        await window.electronAPI.settings.shortCuts.enableGlobalShortcuts(
+          settings.shortKey
+        );
       }
     } catch (error) {
       console.error("启用快捷键失败:", error);

@@ -1,0 +1,17 @@
+// types/auto-launch.d.ts
+declare module 'auto-launch' {
+  interface AutoLaunchOptions {
+    name: string;
+    path: string;
+    isHidden?: boolean;
+  }
+
+  class AutoLaunch {
+    constructor(options: AutoLaunchOptions);
+    enable(): Promise<void>;
+    disable(): Promise<void>;
+    isEnabled(): Promise<boolean>;
+  }
+
+  export = AutoLaunch;
+}

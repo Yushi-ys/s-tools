@@ -12,6 +12,7 @@ const path = require("path");
 const fs = require("fs");
 
 const databaseService = require("./src/db/db.js");
+const autoStartManager = require("./src/utils/class.js");
 const { startServer } = require("./electron-server.js");
 
 const isDev = process.env.NODE_ENV === "dev";
@@ -383,6 +384,18 @@ const createWindow = () => {
     isShortcutsEnabled = true;
     console.log("全局快捷键已启用", key);
     registerGlobalShortcuts(key);
+  });
+
+  ipcMain.handle("enable-auto-start", async () => {
+    return await autoStartManager.enableAutoStart();
+  });
+
+  ipcMain.handle("disable-auto-start", async () => {
+    return await autoStartManager.disableAutoStart();
+  });
+
+  ipcMain.handle("check-auto-start-status", async () => {
+    return await autoStartManager.checkAutoStartStatus();
   });
 
   // 窗口关闭事件处理 - 阻止默认关闭行为

@@ -20,9 +20,7 @@ export interface ITranslationData {
   translatedlLanguage: string;
 }
 
-export type TSettingDisplay = "full_screen" | "window";
 export interface ISettingData {
-  display: TSettingDisplay;
   autoStart: boolean;
   shortKey: string;
 }

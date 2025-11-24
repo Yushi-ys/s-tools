@@ -56,10 +56,19 @@ export interface IElectronAPI {
     getClipboardCount: () => Promise<number>;
   };
 
-  // 禁用全局快捷键
-  disableGlobalShortcuts: () => Promise<void>;
-  // 启用全局快捷键
-  enableGlobalShortcuts: (data: string) => Promise<void>;
+  settings: {
+    autoStart: {
+      enableAutoStart: () => Promise<void>;
+      disableAutoStart: () => Promise<void>;
+      checkAutoStartStatus: () => Promise<void>;
+    };
+    shortCuts: {
+      // 禁用全局快捷键
+      disableGlobalShortcuts: () => Promise<void>;
+      // 启用全局快捷键
+      enableGlobalShortcuts: (data: string) => Promise<void>;
+    };
+  };
 }
 
 declare global {

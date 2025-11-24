@@ -1,6 +1,6 @@
 import { Form, Radio } from "antd";
 import useStore from "@/store/store";
-import type { ISettingData, TSettingDisplay } from "@/store/type";
+import type { ISettingData } from "@/store/type";
 import ShortKey from "./ShortKey";
 
 import styles from "./index.module.less";
@@ -11,7 +11,7 @@ const SettingPage: React.FC = () => {
 
   const onChangeFormState = (
     key: keyof ISettingData,
-    value: TSettingDisplay | boolean | string
+    value: boolean | string
   ) => {
     setSettings({
       ...settings,
@@ -28,15 +28,6 @@ const SettingPage: React.FC = () => {
         wrapperCol={{ span: 14 }}
         style={{ maxWidth: 600 }}
       >
-        <Form.Item label="界面显示">
-          <Radio.Group
-            value={settings.display}
-            onChange={(e) => onChangeFormState("display", e.target.value)}
-          >
-            <Radio value="full_screen">全屏</Radio>
-            <Radio value="window">窗口</Radio>
-          </Radio.Group>
-        </Form.Item>
         <Form.Item label="开机自启动">
           <Radio.Group
             value={settings.autoStart}
