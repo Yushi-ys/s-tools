@@ -1,4 +1,3 @@
-
 .container {
   position: relative;
   width: 100%;
@@ -29,7 +28,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  
+
   &:hover {
     background: var(--accent-color);
     color: white;
@@ -52,7 +51,7 @@
 
 .header {
   margin-bottom: 40px;
-  
+
   h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
@@ -190,7 +189,9 @@
   box-shadow: var(--shadow);
   border: 1px solid var(--border-color);
   animation: slideUp 0.3s ease;
-  
+  max-height: 600px;
+  overflow: auto;
+
   h2 {
     margin-bottom: 24px;
     text-align: center;
@@ -213,7 +214,7 @@
 
 .formGroup {
   margin-bottom: 20px;
-  
+
   label {
     display: block;
     margin-bottom: 8px;
@@ -221,7 +222,7 @@
     color: var(--text-primary);
     font-size: 0.95rem;
   }
-  
+
   input {
     width: 100%;
     padding: 12px 16px;
@@ -231,13 +232,13 @@
     background: var(--bg-secondary);
     color: var(--text-primary);
     transition: all var(--transition-duration);
-    
+
     &:focus {
       outline: none;
       border-color: var(--accent-color);
       box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
     }
-    
+
     &::placeholder {
       color: var(--text-tips-primary);
     }
@@ -251,7 +252,8 @@
   margin-top: 30px;
 }
 
-.cancelButton, .saveButton {
+.cancelButton,
+.saveButton {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -266,7 +268,7 @@
   background: var(--bg-secondary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
-  
+
   &:hover {
     background: var(--border-color);
     color: var(--text-primary);
@@ -276,14 +278,14 @@
 .saveButton {
   background: var(--accent-color);
   color: white;
-  
+
   &:hover {
     background: var(--accent-color);
     opacity: 0.9;
     transform: translateY(-1px);
     box-shadow: var(--shadow);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
@@ -295,42 +297,43 @@
     padding: 30px 20px;
     margin: 20px;
   }
-  
+
   .header h1 {
     font-size: 2rem;
   }
-  
+
   .amount {
     font-size: 3rem;
     height: 60px;
   }
-  
+
   .digit {
     min-width: 36px;
     padding: 0 6px;
   }
-  
+
   .stats {
     flex-direction: column;
     gap: 15px;
     padding: 16px;
   }
-  
+
   .statItem {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .modal {
     padding: 24px 20px;
   }
-  
+
   .modalActions {
     flex-direction: column;
   }
-  
-  .cancelButton, .saveButton {
+
+  .cancelButton,
+  .saveButton {
     width: 100%;
   }
 }
@@ -343,11 +346,11 @@
     height: 40px;
     font-size: 20px;
   }
-  
+
   .amount {
     font-size: 2.5rem;
   }
-  
+
   .digit {
     min-width: 32px;
     padding: 0 4px;
@@ -360,28 +363,28 @@
     .settingsButton {
       background: var(--bg-secondary);
       border-color: var(--border-color);
-      
+
       &:hover {
         background: var(--accent-color);
       }
     }
-    
+
     .mainContent {
       background: var(--bg-secondary);
     }
-    
+
     .digit {
       background: var(--bg-primary);
       border-color: var(--border-color);
     }
-    
+
     .stats {
       background: var(--bg-primary);
     }
-    
+
     input {
       background: var(--bg-secondary);
-      
+
       &:focus {
         box-shadow: 0 0 0 3px rgba(107, 140, 255, 0.2);
       }

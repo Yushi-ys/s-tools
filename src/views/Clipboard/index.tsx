@@ -19,10 +19,9 @@ import {
   message,
   Space,
   Tabs,
-  Typography,
   type TabsProps,
 } from "antd";
-import { useInterval, useMemoizedFn, useUpdate } from "ahooks";
+import { useInterval, useMemoizedFn, useUpdate, useVirtualList } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";
 import EmptyPage from "@/components/Empty";
@@ -37,8 +36,6 @@ interface IRenderItemProps {
   handleCopy: (e: React.MouseEvent, item: IClipboardItem) => void;
 }
 
-const { Paragraph } = Typography;
-
 const UPDATE_INTERVAL = 60 * 1000;
 
 const RenderItem = ({
@@ -49,24 +46,11 @@ const RenderItem = ({
   selectIndex,
 }: IRenderItemProps) => {
   const { type, data, width, height } = item;
-  const [expanded, setExpanded] = useState(false);
 
-  const renderContent = useMemo(() => {
+  const renderContent = () => {
     switch (type) {
       case "text":
-        return (
-          <Paragraph
-    
-            ellipsis={{
-              rows: 4,
-              expandable: "collapsible",
-              expanded,
-              onExpand: (_, info) => setExpanded(info.expanded),
-            }}
-          >
-            {data}
-          </Paragraph>
-        );
+        return <div className={styles.ellipsis}>{data}</div>;
 
       case "image":
         return (
@@ -82,7 +66,7 @@ const RenderItem = ({
       default:
         return null;
     }
-  }, [type, data, width, height, expanded]);
+  };
 
   const handleClick = useMemoizedFn(() => {
     updateSelectedIndex(index);
@@ -99,7 +83,7 @@ const RenderItem = ({
       })}
       onClick={handleClick}
     >
-      <div>{renderContent}</div>
+      <div>{renderContent()}</div>
       <div className={styles.timestamp}>
         <Space>
           {formatRelativeTime(item.timestamp!)}
@@ -144,6 +128,7 @@ const ClipboardPage: React.FC = () => {
   const [selectIndex, setSelectIndex] = useState<number>(0);
   const [selectTab, setSelectTab] = useState<string>(COPYKEYBOARDTYPE.ALL);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const updateSelectedIndex = useMemoizedFn((index: number) => {
     setSelectIndex(index);
@@ -180,6 +165,29 @@ const ClipboardPage: React.FC = () => {
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);
 
+  const calculateItemHeight = (
+    dataSource: IClipboardItem[],
+    index: number
+  ): number => {
+    let height = 0;
+    const item = dataSource[index];
+    if (item.type === "image") {
+      height = 125.05; // 图片项目较高
+    }
+    height = 47.05;
+
+    if (index === selectIndex) height += 2;
+
+    return height;
+  };
+
+  const [virtualList] = useVirtualList(dataSource, {
+    containerTarget: scrollContainerRef,
+    wrapperTarget: listRef,
+    itemHeight: (index) => calculateItemHeight(dataSource, index),
+    overscan: 5,
+  });
+
   useInterval(() => {
     update();
   }, UPDATE_INTERVAL);
@@ -199,16 +207,25 @@ const ClipboardPage: React.FC = () => {
         {isLoading ? (
           <Loading />
         ) : !!dataSource.length ? (
-          dataSource.map((item, index) => (
-            <RenderItem
-              item={item}
-              index={index}
-              selectIndex={selectIndex}
-              updateSelectedIndex={updateSelectedIndex}
-              handleCopy={handleCopy}
-              key={"clipBorad" + index}
-            />
-          ))
+          <div ref={listRef} className={styles.virtualListWrapper}>
+            {virtualList.map((item) => (
+              <div
+                key={"clipBorad" + item.index}
+                style={{
+                  padding: 0,
+                  margin: 0,
+                }}
+              >
+                <RenderItem
+                  item={item.data}
+                  index={item.index}
+                  selectIndex={selectIndex}
+                  updateSelectedIndex={updateSelectedIndex}
+                  handleCopy={handleCopy}
+                />
+              </div>
+            ))}
+          </div>
         ) : (
           <EmptyPage />
         )}

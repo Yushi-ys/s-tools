@@ -163,8 +163,6 @@ const TodayEarnings: React.FC = () => {
               />
             </div>
 
-            {/* 移除了每天工作小时的输入 */}
-
             {/* 工作时间设置 */}
             <div className={styles.formGroup}>
               <label>上班时间</label>

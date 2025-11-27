@@ -75,6 +75,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@google/gemini-cli": "^0.18.0",
     "ahooks": "^3.9.6",
     "antd": "^5.27.3",
     "auto-launch": "^5.0.6",

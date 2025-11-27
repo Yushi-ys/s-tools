@@ -21,11 +21,33 @@
     overflow-y: auto;
   }
 
+  .virtualListWrapper {
+    position: relative;
+    width: 100%;
+  }
+
   .renderItem {
     margin-bottom: 0.1rem;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+
+    .ellipsis {
+      display: "-webkit-box";
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: "vertical";
+      overflow: "hidden";
+      text-overflow: "ellipsis";
+      line-height: "1.5";
+      max-height: "6em";
+    }
+
     .timestamp {
       font-size: 0.7rem;
       color: var(--text-tips-primary);
@@ -38,6 +60,10 @@
         cursor: pointer;
         font-size: 0.9rem;
         color: #1677ff;
+
+        &:hover {
+          color: #0958d9;
+        }
       }
     }
   }
@@ -45,5 +71,6 @@
   .selected {
     border: 2px solid var(--select-border-color);
     border-right: 0;
+    background-color: var(--bg-selected);
   }
 }
