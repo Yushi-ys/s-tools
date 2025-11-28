@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useLayoutEffect } from "react";
 import {
   useAdvancedClipboard,
   type IClipboardItem,
@@ -16,15 +16,17 @@ import {
   Flex,
   FloatButton,
   Image,
+  List,
   message,
   Space,
   Tabs,
   type TabsProps,
 } from "antd";
-import { useInterval, useMemoizedFn, useUpdate, useVirtualList } from "ahooks";
+import { useInterval, useMemoizedFn, useUpdate, useSize } from "ahooks";
 import { COPYKEYBOARDTYPE, COPYKEYBOARDTYPELABEL } from "@/types/constants";
 import Loading from "@/components/Loading";
 import EmptyPage from "@/components/Empty";
+import VirtualList from 'rc-virtual-list';
 
 import styles from "./index.module.less";
 
@@ -77,27 +79,36 @@ const RenderItem = ({
   });
 
   return (
-    <div
+    <List.Item
       className={cls(styles.renderItem, {
         [styles.selected]: selectIndex === index,
       })}
       onClick={handleClick}
+      style={{
+        padding: '8px 12px',
+        marginBottom: '2px',
+        border: '1px solid var(--border-color)',
+        borderRadius: '6px',
+        cursor: 'pointer',
+      }}
     >
-      <div>{renderContent()}</div>
-      <div className={styles.timestamp}>
-        <Space>
-          {formatRelativeTime(item.timestamp!)}
-          {type === "image" && (
-            <div>
-              {width} × {height}
-            </div>
-          )}
-        </Space>
-        <div className={styles.icon} onClick={handleCopyClick}>
-          <CopyOutlined />
+      <div style={{ width: '100%' }}>
+        <div>{renderContent()}</div>
+        <div className={styles.timestamp}>
+          <Space>
+            {formatRelativeTime(item.timestamp!)}
+            {type === "image" && (
+              <div>
+                {width} × {height}
+              </div>
+            )}
+          </Space>
+          <div className={styles.icon} onClick={handleCopyClick}>
+            <CopyOutlined />
+          </div>
         </div>
       </div>
-    </div>
+    </List.Item>
   );
 };
 
@@ -128,7 +139,33 @@ const ClipboardPage: React.FC = () => {
   const [selectIndex, setSelectIndex] = useState<number>(0);
   const [selectTab, setSelectTab] = useState<string>(COPYKEYBOARDTYPE.ALL);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  // 动态计算容器高度
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (scrollContainerRef.current) {
+        const height = scrollContainerRef.current.clientHeight;
+        setContainerHeight(height);
+      }
+    };
+
+    updateHeight();
+
+    // 监听窗口大小变化
+    window.addEventListener('resize', updateHeight);
+    
+    // 使用 ResizeObserver 监听容器大小变化
+    const resizeObserver = new ResizeObserver(updateHeight);
+    if (scrollContainerRef.current) {
+      resizeObserver.observe(scrollContainerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const updateSelectedIndex = useMemoizedFn((index: number) => {
     setSelectIndex(index);
@@ -165,29 +202,6 @@ const ClipboardPage: React.FC = () => {
     return clipBoradData.filter((item) => item.type === selectTab);
   }, [selectTab, clipBoradData]);
 
-  const calculateItemHeight = (
-    dataSource: IClipboardItem[],
-    index: number
-  ): number => {
-    let height = 0;
-    const item = dataSource[index];
-    if (item.type === "image") {
-      height = 125.05; // 图片项目较高
-    }
-    height = 47.05;
-
-    if (index === selectIndex) height += 2;
-
-    return height;
-  };
-
-  const [virtualList] = useVirtualList(dataSource, {
-    containerTarget: scrollContainerRef,
-    wrapperTarget: listRef,
-    itemHeight: (index) => calculateItemHeight(dataSource, index),
-    overscan: 5,
-  });
-
   useInterval(() => {
     update();
   }, UPDATE_INTERVAL);
@@ -206,31 +220,33 @@ const ClipboardPage: React.FC = () => {
         {contextHolder}
         {isLoading ? (
           <Loading />
-        ) : !!dataSource.length ? (
-          <div ref={listRef} className={styles.virtualListWrapper}>
-            {virtualList.map((item) => (
-              <div
-                key={"clipBorad" + item.index}
-                style={{
-                  padding: 0,
-                  margin: 0,
-                }}
-              >
+        ) : !!dataSource.length && containerHeight > 0 ? (
+          <List>
+            <VirtualList
+              data={dataSource}
+              height={containerHeight}
+              itemHeight={47}
+              itemKey='clipboard'
+            >
+              {(item: IClipboardItem, index) => (
                 <RenderItem
-                  item={item.data}
-                  index={item.index}
+                  item={item}
+                  index={index}
                   selectIndex={selectIndex}
                   updateSelectedIndex={updateSelectedIndex}
                   handleCopy={handleCopy}
                 />
-              </div>
-            ))}
-          </div>
+              )}
+            </VirtualList>
+          </List>
         ) : (
           <EmptyPage />
         )}
         <FloatButton.BackTop
           target={() => scrollContainerRef.current as HTMLElement}
+          style={{
+            insetBlockEnd: 70,
+          }}
         />
       </div>
     </div>

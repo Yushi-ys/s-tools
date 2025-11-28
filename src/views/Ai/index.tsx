@@ -38,10 +38,10 @@ const AiPage = () => {
   // 将 messages 转换为 API 需要的 ChatMessage 格式
   const getConversationHistory = (): ChatMessage[] => {
     return messages
-      .filter(msg => msg.content.trim()) // 过滤空消息
-      .map(msg => ({
-        role: msg.isUser ? 'user' as const : 'assistant' as const,
-        content: msg.content
+      .filter((msg) => msg.content.trim()) // 过滤空消息
+      .map((msg) => ({
+        role: msg.isUser ? ("user" as const) : ("assistant" as const),
+        content: msg.content,
       }));
   };
 
@@ -92,7 +92,8 @@ const AiPage = () => {
       const conversationHistory = getConversationHistory().slice(0, -1); // 排除当前的空AI消息
 
       await streamDeepSeek(content, {
-        systemMessage: "你是一个有用的AI助手，请用友好、专业的语气回答用户的问题。回答要简洁明了，避免冗长。",
+        systemMessage:
+          "你是一个有用的AI助手，请用友好、专业的语气回答用户的问题。回答要简洁明了，避免冗长。",
         conversationHistory, // 传入对话历史
         onChunk: (_: string, fullResponse: string) => {
           setMessages((prev) =>
@@ -117,7 +118,7 @@ const AiPage = () => {
                 : msg
             )
           );
-        }
+        },
       });
     } catch (error) {
       console.error("AI请求失败:", error);
@@ -189,15 +190,11 @@ const AiPage = () => {
       <FloatButton
         shape="circle"
         type="primary"
-        style={{
-          width: "60px",
-          height: "60px",
-          backgroundColor: "var(--accent-color)",
-          border: "none",
-        }}
-        description="AI助手"
         icon={<CustomerServiceOutlined />}
         onClick={() => setIsOpen(true)}
+        style={{
+          insetBlockEnd: 20,
+        }}
       />
 
       {/* 对话框 */}
